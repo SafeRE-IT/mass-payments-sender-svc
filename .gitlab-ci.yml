@@ -1,0 +1,37 @@
+services:
+- docker:dind
+
+variables:
+  IMAGE_NAME: registry.gitlab.com/tokend/mass-payments-sender-svc:$CI_COMMIT_SHA
+  DH_IMAGE_NAME: tokend/mass-payments-sender-svc
+
+stages:
+- build
+- publish
+
+# build and publish docker image to the registry
+build:
+  image: docker:latest
+  stage: build
+  tags:
+  - tokend
+  script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - version=$(test -z $CI_COMMIT_TAG && echo $CI_COMMIT_SHA || echo $CI_COMMIT_TAG)
+  - docker build --build-arg VERSION="$version" --pull -t $IMAGE_NAME .
+  - docker push $IMAGE_NAME
+publish dockerhub:
+  image: docker:latest
+  stage: publish
+  tags:
+  - tokend
+  only:
+  - /^\d+\.\d+\.\d+.*$/
+  script:
+  - RELEASE=$CI_COMMIT_REF_NAME
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PWD
+  - docker pull $IMAGE_NAME
+  - docker tag $IMAGE_NAME $DH_IMAGE_NAME:$RELEASE
+  - docker push $DH_IMAGE_NAME:$RELEASE
+
