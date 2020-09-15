@@ -10,13 +10,13 @@ import (
 	"gitlab.com/distributed_lab/kit/pgdb"
 )
 
-const transactionsTableName = "transactions"
+const paymentsTableName = "payments"
 
-func NewTransactionsQ(db *pgdb.DB) data.TransactionsQ {
+func NewTransactionsQ(db *pgdb.DB) data.PaymentsQ {
 	return &transactionsQ{
 		db:        db.Clone(),
-		sql:       sq.Select("*").From(transactionsTableName),
-		sqlUpdate: sq.Update(transactionsTableName),
+		sql:       sq.Select("*").From(paymentsTableName),
+		sqlUpdate: sq.Update(paymentsTableName),
 	}
 }
 
@@ -26,7 +26,7 @@ type transactionsQ struct {
 	sqlUpdate sq.UpdateBuilder
 }
 
-func (q *transactionsQ) New() data.TransactionsQ {
+func (q *transactionsQ) New() data.PaymentsQ {
 	return NewTransactionsQ(q.db)
 }
 
@@ -46,9 +46,9 @@ func (q *transactionsQ) Select() ([]data.Transaction, error) {
 	return result, err
 }
 
-func (q *transactionsQ) Exists(requestID int64, status data.TxStatus) (bool, error) {
+func (q *transactionsQ) Exists(requestID int64, status data.PaymentStatus) (bool, error) {
 	stmt := sq.Select(fmt.Sprintf("exists(select 1 from %s where request_id = %d and status = '%s')",
-		transactionsTableName, requestID, status))
+		paymentsTableName, requestID, status))
 
 	var result bool
 	err := q.db.Get(&result, stmt)
@@ -61,47 +61,47 @@ func (q *transactionsQ) Update() ([]data.Transaction, error) {
 	return result, err
 }
 
-func (q *transactionsQ) Transaction(fn func(q data.TransactionsQ) error) error {
+func (q *transactionsQ) Transaction(fn func(q data.PaymentsQ) error) error {
 	return q.db.Transaction(func() error {
 		return fn(q)
 	})
 }
 
-func (q *transactionsQ) Page(pageParams pgdb.OffsetPageParams) data.TransactionsQ {
+func (q *transactionsQ) Page(pageParams pgdb.OffsetPageParams) data.PaymentsQ {
 	q.sql = pageParams.ApplyTo(q.sql, "hash")
 	return q
 }
 
-func (q *transactionsQ) FilterByRequestID(ids ...int64) data.TransactionsQ {
+func (q *transactionsQ) FilterByRequestID(ids ...int64) data.PaymentsQ {
 	q.sql = q.sql.Where(sq.Eq{"request_id": ids})
 	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"request_id": ids})
 	return q
 }
 
-func (q *transactionsQ) FilterByID(ids ...int64) data.TransactionsQ {
+func (q *transactionsQ) FilterByID(ids ...int64) data.PaymentsQ {
 	q.sql = q.sql.Where(sq.Eq{"id": ids})
 	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"id": ids})
 	return q
 }
 
-func (q *transactionsQ) FilterByStatus(statuses ...data.TxStatus) data.TransactionsQ {
+func (q *transactionsQ) FilterByStatus(statuses ...data.PaymentStatus) data.PaymentsQ {
 	q.sql = q.sql.Where(sq.Eq{"status": statuses})
 	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"status": statuses})
 	return q
 }
 
-func (q *transactionsQ) Limit(limit uint64) data.TransactionsQ {
+func (q *transactionsQ) Limit(limit uint64) data.PaymentsQ {
 	q.sql = q.sql.Limit(limit)
 	q.sqlUpdate = q.sqlUpdate.Limit(limit)
 	return q
 }
 
-func (q *transactionsQ) SetStatus(status data.TxStatus) data.TransactionsQ {
+func (q *transactionsQ) SetStatus(status data.PaymentStatus) data.PaymentsQ {
 	q.sqlUpdate = q.sqlUpdate.Set("status", status)
 	return q
 }
 
-func (q *transactionsQ) SetFailureReason(reason string) data.TransactionsQ {
+func (q *transactionsQ) SetFailureReason(reason string) data.PaymentsQ {
 	q.sqlUpdate = q.sqlUpdate.Set("failure_reason", reason)
 	return q
 }

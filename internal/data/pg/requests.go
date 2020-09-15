@@ -131,7 +131,7 @@ func (q *requestsQ) GetMaxId() (*int64, error) {
 	return result, err
 }
 
-func (q *requestsQ) InsertTransactions(txs ...data.Transaction) ([]data.Transaction, error) {
+func (q *requestsQ) InsertPayments(txs ...data.Transaction) ([]data.Transaction, error) {
 	if len(txs) == 0 {
 		return nil, errors.New("empty array is not allowed")
 	}

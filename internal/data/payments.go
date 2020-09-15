@@ -5,35 +5,35 @@ import (
 	regources "gitlab.com/tokend/regources/generated"
 )
 
-type TransactionsQ interface {
-	New() TransactionsQ
+type PaymentsQ interface {
+	New() PaymentsQ
 
 	Get() (*Transaction, error)
 	Select() ([]Transaction, error)
-	Exists(requestID int64, status TxStatus) (bool, error)
+	Exists(requestID int64, status PaymentStatus) (bool, error)
 	Update() ([]Transaction, error)
 
-	Transaction(fn func(q TransactionsQ) error) error
+	Transaction(fn func(q PaymentsQ) error) error
 
-	Page(pageParams pgdb.OffsetPageParams) TransactionsQ
+	Page(pageParams pgdb.OffsetPageParams) PaymentsQ
 
-	FilterByRequestID(ids ...int64) TransactionsQ
-	FilterByID(ids ...int64) TransactionsQ
-	FilterByStatus(statuses ...TxStatus) TransactionsQ
-	Limit(limit uint64) TransactionsQ
+	FilterByRequestID(ids ...int64) PaymentsQ
+	FilterByID(ids ...int64) PaymentsQ
+	FilterByStatus(statuses ...PaymentStatus) PaymentsQ
+	Limit(limit uint64) PaymentsQ
 
-	SetStatus(status TxStatus) TransactionsQ
-	SetFailureReason(reason string) TransactionsQ
+	SetStatus(status PaymentStatus) PaymentsQ
+	SetFailureReason(reason string) PaymentsQ
 
 	UpdateRequestStatus(requestId int64, status RequestStatus) error
 }
 
-type TxStatus string
+type PaymentStatus string
 
 const (
-	TxStatusProcessing TxStatus = "processing"
-	TxStatusFailed     TxStatus = "failed"
-	TxStatusSuccess    TxStatus = "success"
+	PaymentStatusProcessing PaymentStatus = "processing"
+	PaymentStatusFailed     PaymentStatus = "failed"
+	PaymentStatusSuccess    PaymentStatus = "success"
 )
 
 const (
@@ -43,7 +43,7 @@ const (
 type Transaction struct {
 	ID              string           `db:"id" structs:"-"`
 	RequestID       int64            `db:"request_id" structs:"request_id"`
-	Status          TxStatus         `db:"status" structs:"status"`
+	Status          PaymentStatus    `db:"status" structs:"status"`
 	FailureReason   *string          `db:"failure_reason" structs:"failure_reason"`
 	Amount          regources.Amount `db:"amount" structs:"amount"`
 	Destination     string           `db:"destination" structs:"destination"`

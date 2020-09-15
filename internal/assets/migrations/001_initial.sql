@@ -8,7 +8,7 @@ create table requests (
     lockup_until timestamp without time zone
 );
 
-create table transactions (
+create table payments (
     id bigserial primary key,
     request_id bigint not null references requests(id) on delete cascade,
     status text not null,

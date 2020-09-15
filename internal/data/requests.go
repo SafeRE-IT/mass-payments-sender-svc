@@ -27,7 +27,7 @@ type RequestsQ interface {
 
 	GetMaxId() (*int64, error)
 
-	InsertTransactions(txs ...Transaction) ([]Transaction, error)
+	InsertPayments(payments ...Transaction) ([]Transaction, error)
 }
 
 type RequestStatus string
