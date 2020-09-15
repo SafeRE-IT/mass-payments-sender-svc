@@ -1,0 +1,41 @@
+get:
+  tags:
+    - Requests
+  summary: Get requests list
+  operationId: getRequestsList
+  parameters:
+    - $ref: '#/components/parameters/pageNumberParam'
+    - $ref: '#/components/parameters/pageLimitParam'
+    - $ref: '#/components/parameters/sortingParam'
+    - in: query
+      name: 'filter[owner]'
+      required: false
+      schema:
+        type: string
+    - in: query
+      name: 'filter[status]'
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Request'
+              links:
+                type: object
+                description: "Provides links for pagination"
+                properties:
+                  next:
+                    type: string
+                    description: "link to the next page"
+                  self:
+                    type: string
+                    description: "link to the current page"

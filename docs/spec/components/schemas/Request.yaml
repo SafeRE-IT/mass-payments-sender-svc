@@ -1,0 +1,29 @@
+allOf:
+  - $ref: '#/components/schemas/RequestKey'
+  - type: object
+    required: [relationships, attributes]
+    properties:
+      relationships:
+        type: object
+        required:
+          - owner
+        properties:
+          owner:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                $ref: '#/components/schemas/AccountKey'
+      attributes:
+        type: object
+        required:
+          - status
+        properties:
+          lockup_until:
+            type: string
+            format: time.Time
+          status:
+            type: string
+          failure_reason:
+            type: string

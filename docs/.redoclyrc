@@ -1,0 +1,9 @@
+
+apiTitle: Mass payments sender
+splitSpec: true
+codeSamples: false
+swaggerUI: true
+travis: true
+repo: tokend/mass-payments-sender-svc
+oasVersion: 1.0.0
+

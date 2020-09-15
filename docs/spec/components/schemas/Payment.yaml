@@ -1,0 +1,37 @@
+allOf:
+  - $ref: '#/components/schemas/PaymentKey'
+  - type: object
+    required: [ relationships, attributes ]
+    properties:
+      relationships:
+        type: object
+        required:
+          - request
+        properties:
+          request:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                $ref: '#/components/schemas/RequestKey'
+      attributes:
+        type: object
+        required:
+          - body
+          - status
+          - amount
+          - destination
+          - destination_type
+        properties:
+          amount:
+            type: string
+            format: regources.Amount
+          destination:
+            type: string
+          destination_type:
+            type: string
+          status:
+            type: string
+          failure_reason:
+            type: string
