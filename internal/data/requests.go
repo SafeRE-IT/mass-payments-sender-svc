@@ -1,6 +1,10 @@
 package data
 
-import "gitlab.com/distributed_lab/kit/pgdb"
+import (
+	"time"
+
+	"gitlab.com/distributed_lab/kit/pgdb"
+)
 
 type RequestsQ interface {
 	New() RequestsQ
@@ -39,4 +43,5 @@ type Request struct {
 	Owner         string        `db:"owner" structs:"owner"`
 	Status        RequestStatus `db:"status" structs:"status"`
 	FailureReason *string       `db:"failure_reason" structs:"failure_reason"`
+	LockupUntil   *time.Time    `db:"lockup_until" structs:"lockup_until"`
 }

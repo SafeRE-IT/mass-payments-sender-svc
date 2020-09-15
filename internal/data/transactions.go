@@ -1,6 +1,9 @@
 package data
 
-import "gitlab.com/distributed_lab/kit/pgdb"
+import (
+	"gitlab.com/distributed_lab/kit/pgdb"
+	regources "gitlab.com/tokend/regources/generated"
+)
 
 type TransactionsQ interface {
 	New() TransactionsQ
@@ -15,7 +18,7 @@ type TransactionsQ interface {
 	Page(pageParams pgdb.OffsetPageParams) TransactionsQ
 
 	FilterByRequestID(ids ...int64) TransactionsQ
-	FilterByHash(hashes ...string) TransactionsQ
+	FilterByID(ids ...int64) TransactionsQ
 	FilterByStatus(statuses ...TxStatus) TransactionsQ
 	Limit(limit uint64) TransactionsQ
 
@@ -33,10 +36,16 @@ const (
 	TxStatusSuccess    TxStatus = "success"
 )
 
+const (
+	DestinationTypeAccountID = "account_id"
+)
+
 type Transaction struct {
-	Hash          string   `db:"hash" structs:"hash"`
-	Body          string   `db:"body" structs:"body"`
-	RequestID     int64    `db:"request_id" structs:"request_id"`
-	Status        TxStatus `db:"status" structs:"status"`
-	FailureReason *string  `db:"failure_reason" structs:"failure_reason"`
+	ID              string           `db:"id" structs:"-"`
+	RequestID       int64            `db:"request_id" structs:"request_id"`
+	Status          TxStatus         `db:"status" structs:"status"`
+	FailureReason   *string          `db:"failure_reason" structs:"failure_reason"`
+	Amount          regources.Amount `db:"amount" structs:"amount"`
+	Destination     string           `db:"destination" structs:"destination"`
+	DestinationType string           `db:"destination_type" structs:"destination_type"`
 }

@@ -3,6 +3,7 @@ package pg
 import (
 	"database/sql"
 	"fmt"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
 
 	sq "github.com/Masterminds/squirrel"
@@ -77,9 +78,9 @@ func (q *transactionsQ) FilterByRequestID(ids ...int64) data.TransactionsQ {
 	return q
 }
 
-func (q *transactionsQ) FilterByHash(hashes ...string) data.TransactionsQ {
-	q.sql = q.sql.Where(sq.Eq{"hash": hashes})
-	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"hash": hashes})
+func (q *transactionsQ) FilterByID(ids ...int64) data.TransactionsQ {
+	q.sql = q.sql.Where(sq.Eq{"id": ids})
+	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"id": ids})
 	return q
 }
 

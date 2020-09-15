@@ -3,6 +3,7 @@ package pg
 import (
 	"database/sql"
 	"errors"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
 
 	sq "github.com/Masterminds/squirrel"
@@ -136,20 +137,21 @@ func (q *requestsQ) InsertTransactions(txs ...data.Transaction) ([]data.Transact
 	}
 
 	names := []string{
-		"hash",
 		"request_id",
-		"body",
 		"status",
 		"failure_reason",
+		"amount",
+		"destination",
+		"destination_type",
 	}
 	stmt := sq.Insert(transactionsTableName).Columns(names...)
 	for _, item := range txs {
 		stmt = stmt.Values([]interface{}{
-			item.Hash,
 			item.RequestID,
-			item.Body,
 			item.Status,
 			item.FailureReason,
+			item.Amount,
+			item.Destination,
 		}...)
 	}
 
