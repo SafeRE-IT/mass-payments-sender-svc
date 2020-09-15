@@ -366,6 +366,9 @@ gitlab.com/distributed_lab/lorem v0.2.0 h1:Rc7Ef3eGSpei8EtWcV6fzPW3O/QEF2zgZR4+h
 gitlab.com/distributed_lab/lorem v0.2.0/go.mod h1:wkzrGoB1L/yUBu56SfoJ/vNiPqiHZcg75AnBkWNcjhQ=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c h1:cpIjV8C//7sLVvMcBaFGopI8sMcCw8Za7T0HIf52esU=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c/go.mod h1:4TnADX84dQjQMRHKIMPCVL0L97rD/Jxv0xDbrN6aKzk=
+gitlab.com/distributed_lab/urlval v1.1.0 h1:2xP9goFHHwO5tiAMPtmodZ1VGqIYKxKgrIItUmb6wM8=
+gitlab.com/distributed_lab/urlval v2.2.0+incompatible h1:ciyvjuBBoo9HD/kbyPhBqgg2EUgv6aqxzoz/6ZwA/Bo=
+gitlab.com/distributed_lab/urlval v2.2.0+incompatible/go.mod h1:cKnUlnZCHUuke/l95YLvW5JoGC2yn53HVgF9rt1WiIg=
 gitlab.com/tokend/connectors v0.1.3 h1:2/nGrN8oDO3iuWnI2q99yOJdOOpK+p08vaVtpZqKwEg=
 gitlab.com/tokend/connectors v0.1.3/go.mod h1:SlyDvSRLmbw4BYqh4hpPziKvMxKMsugJrPkjKxoGU/g=
 gitlab.com/tokend/go v1.0.0 h1:1YI6WZKxhq/MfiK6VERUJi2K35lIuUHdlPSVh2guHD8=

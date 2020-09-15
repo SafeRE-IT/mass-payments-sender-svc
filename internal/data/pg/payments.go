@@ -12,7 +12,7 @@ import (
 
 const paymentsTableName = "payments"
 
-func NewTransactionsQ(db *pgdb.DB) data.PaymentsQ {
+func NewPaymentsQ(db *pgdb.DB) data.PaymentsQ {
 	return &transactionsQ{
 		db:        db.Clone(),
 		sql:       sq.Select("*").From(paymentsTableName),
@@ -27,11 +27,11 @@ type transactionsQ struct {
 }
 
 func (q *transactionsQ) New() data.PaymentsQ {
-	return NewTransactionsQ(q.db)
+	return NewPaymentsQ(q.db)
 }
 
-func (q *transactionsQ) Get() (*data.Transaction, error) {
-	var result data.Transaction
+func (q *transactionsQ) Get() (*data.Payment, error) {
+	var result data.Payment
 	err := q.db.Get(&result, q.sql)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -40,8 +40,8 @@ func (q *transactionsQ) Get() (*data.Transaction, error) {
 	return &result, err
 }
 
-func (q *transactionsQ) Select() ([]data.Transaction, error) {
-	var result []data.Transaction
+func (q *transactionsQ) Select() ([]data.Payment, error) {
+	var result []data.Payment
 	err := q.db.Select(&result, q.sql)
 	return result, err
 }
@@ -55,8 +55,8 @@ func (q *transactionsQ) Exists(requestID int64, status data.PaymentStatus) (bool
 	return result, err
 }
 
-func (q *transactionsQ) Update() ([]data.Transaction, error) {
-	var result []data.Transaction
+func (q *transactionsQ) Update() ([]data.Payment, error) {
+	var result []data.Payment
 	err := q.db.Select(&result, q.sqlUpdate)
 	return result, err
 }

@@ -131,7 +131,7 @@ func (q *requestsQ) GetMaxId() (*int64, error) {
 	return result, err
 }
 
-func (q *requestsQ) InsertPayments(txs ...data.Transaction) ([]data.Transaction, error) {
+func (q *requestsQ) InsertPayments(txs ...data.Payment) ([]data.Payment, error) {
 	if len(txs) == 0 {
 		return nil, errors.New("empty array is not allowed")
 	}
@@ -144,7 +144,7 @@ func (q *requestsQ) InsertPayments(txs ...data.Transaction) ([]data.Transaction,
 		"destination",
 		"destination_type",
 	}
-	stmt := sq.Insert(transactionsTableName).Columns(names...)
+	stmt := sq.Insert(paymentsTableName).Columns(names...)
 	for _, item := range txs {
 		stmt = stmt.Values([]interface{}{
 			item.RequestID,
@@ -156,7 +156,7 @@ func (q *requestsQ) InsertPayments(txs ...data.Transaction) ([]data.Transaction,
 	}
 
 	stmt = stmt.Suffix("returning *")
-	var result []data.Transaction
+	var result []data.Payment
 	err := q.db.Select(&result, stmt)
 
 	return result, err

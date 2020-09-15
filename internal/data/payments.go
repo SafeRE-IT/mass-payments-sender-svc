@@ -8,10 +8,10 @@ import (
 type PaymentsQ interface {
 	New() PaymentsQ
 
-	Get() (*Transaction, error)
-	Select() ([]Transaction, error)
+	Get() (*Payment, error)
+	Select() ([]Payment, error)
 	Exists(requestID int64, status PaymentStatus) (bool, error)
-	Update() ([]Transaction, error)
+	Update() ([]Payment, error)
 
 	Transaction(fn func(q PaymentsQ) error) error
 
@@ -40,8 +40,8 @@ const (
 	DestinationTypeAccountID = "account_id"
 )
 
-type Transaction struct {
-	ID              string           `db:"id" structs:"-"`
+type Payment struct {
+	ID              int64            `db:"id" structs:"-"`
 	RequestID       int64            `db:"request_id" structs:"request_id"`
 	Status          PaymentStatus    `db:"status" structs:"status"`
 	FailureReason   *string          `db:"failure_reason" structs:"failure_reason"`

@@ -146,6 +146,11 @@ gitlab.com/distributed_lab/lorem
 # gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c
 ## explicit
 gitlab.com/distributed_lab/running
+# gitlab.com/distributed_lab/urlval v2.2.0+incompatible
+## explicit
+gitlab.com/distributed_lab/urlval
+gitlab.com/distributed_lab/urlval/internal
+gitlab.com/distributed_lab/urlval/internal/betterreflect
 # gitlab.com/tokend/connectors v0.1.3
 ## explicit
 gitlab.com/tokend/connectors/keyer
@@ -157,6 +162,8 @@ gitlab.com/tokend/connectors/submit
 ## explicit
 gitlab.com/tokend/go/amount
 gitlab.com/tokend/go/crc16
+gitlab.com/tokend/go/doorman
+gitlab.com/tokend/go/doorman/data
 gitlab.com/tokend/go/hash
 gitlab.com/tokend/go/keypair
 gitlab.com/tokend/go/network
