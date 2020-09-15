@@ -71,6 +71,8 @@ github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7
 github.com/evalphobia/logrus_sentry v0.8.2 h1:dotxHq+YLZsT1Bb45bB5UQbfCh3gM/nFFetyN46VoDQ=
 github.com/evalphobia/logrus_sentry v0.8.2/go.mod h1:pKcp+vriitUqu9KiWj/VRFbRfFNUwz95/UkgG8a6MNc=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
+github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
+github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/franela/goblin v0.0.0-20200105215937-c9ffbefa60db/go.mod h1:7dvUGVsVBjqR7JHJk0brhHOZYGmfBYOrK0ZhYMEtBr4=
 github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8/go.mod h1:ZhphrRTfi2rbfLwlschooIH4+wKKDR4Pdxhh+TRoA20=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
@@ -237,6 +239,8 @@ github.com/nats-io/nats.go v1.9.1/go.mod h1:ZjDU1L/7fJ09jvUSRVBR2e7+RnLiiIQyqyzE
 github.com/nats-io/nkeys v0.1.0/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxziKVo7w=
 github.com/nats-io/nkeys v0.1.3/go.mod h1:xpnFELMwJABBLVhffcfd1MZx6VsNRFpEugbxziKVo7w=
 github.com/nats-io/nuid v1.0.1/go.mod h1:19wcPz3Ph3q0Jbyiqsd0kePYG7A95tJPxeL+1OSON2c=
+github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077 h1:A804awGqaW7i61y8KnbtHmh3scqbNuTJqcycq3u5ZAU=
+github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077/go.mod h1:sZZi9x5aHXGZ/RRp7Ne5rkvtDxZb7pd7vgVA+gmE35A=
 github.com/oklog/oklog v0.3.2/go.mod h1:FCV+B7mhrz4o+ueLpx+KqkyXRGMWOYEvfiXtdGtbWGs=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
 github.com/oklog/ulid v1.3.1 h1:EGfNDEx6MqHz8B3uNV6QAib1UR2Lm97sHi3ocA6ESJ4=
@@ -351,6 +355,8 @@ gitlab.com/distributed_lab/ape v1.5.0 h1:DdmnmqaJfn6Tqn4hkFa4ArbNBRTpSktyO4nZGTp
 gitlab.com/distributed_lab/ape v1.5.0/go.mod h1:MTCxXQHGrMJd6VB2NjJA5/C9djJoR0z+YyJ40I7Vj64=
 gitlab.com/distributed_lab/figure v2.1.0+incompatible h1:8kNtvWO91BSQ4OsqL2P3qNWSBnh/Q/TdWB8vHy8xvNI=
 gitlab.com/distributed_lab/figure v2.1.0+incompatible/go.mod h1:tk+aPBohT49MGPLy5+eVbE1HpD/CaC5drBHfVpRI8eE=
+gitlab.com/distributed_lab/json-api-connector v0.2.3 h1:chxD6WAW5GxahgHxLZ0dKTFaKjp7sYW1dIuOiAh7SYA=
+gitlab.com/distributed_lab/json-api-connector v0.2.3/go.mod h1:PfWKMdxGaBCbO5TcWecu/ZFFJXuVuHo/Ur4go7CIPZ4=
 gitlab.com/distributed_lab/kit v1.8.1 h1:Mhbh+xX+jJWa+6rapM2zBnJYkrptHpN2lTXb9ydppJM=
 gitlab.com/distributed_lab/kit v1.8.1/go.mod h1:YII/HvTMx2JuniTW7Y0hciyPX/q9nBJiI0viVVrxiQc=
 gitlab.com/distributed_lab/logan v0.0.91 h1:hTStx0i1B/qYk/IAWyJRXoISO/DRAbYaG54HsMyliiQ=
@@ -360,6 +366,15 @@ gitlab.com/distributed_lab/lorem v0.2.0 h1:Rc7Ef3eGSpei8EtWcV6fzPW3O/QEF2zgZR4+h
 gitlab.com/distributed_lab/lorem v0.2.0/go.mod h1:wkzrGoB1L/yUBu56SfoJ/vNiPqiHZcg75AnBkWNcjhQ=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c h1:cpIjV8C//7sLVvMcBaFGopI8sMcCw8Za7T0HIf52esU=
 gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c/go.mod h1:4TnADX84dQjQMRHKIMPCVL0L97rD/Jxv0xDbrN6aKzk=
+gitlab.com/tokend/connectors v0.1.3 h1:2/nGrN8oDO3iuWnI2q99yOJdOOpK+p08vaVtpZqKwEg=
+gitlab.com/tokend/connectors v0.1.3/go.mod h1:SlyDvSRLmbw4BYqh4hpPziKvMxKMsugJrPkjKxoGU/g=
+gitlab.com/tokend/go v1.0.0 h1:1YI6WZKxhq/MfiK6VERUJi2K35lIuUHdlPSVh2guHD8=
+gitlab.com/tokend/go v3.13.0+incompatible h1:8kEvIsb42kW3mWQVpN2w2JUN4uHYuOrY6CC+aU7IaX0=
+gitlab.com/tokend/go v3.13.0+incompatible/go.mod h1:qz38YBc7VL29H2gnXbpRzcEVw2d1NUZ5SVDzIehqDCA=
+gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312 h1:u8pxrNw8QKIsrmClG71uuTPy22fkePAXBkHgxrXkMU8=
+gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312/go.mod h1:vdlhN5/oQR7uY8EsGSqPf8bwnmQxxpaq7qrQn5Y3U/w=
+gitlab.com/tokend/regources v4.9.1+incompatible h1:4iLZ/SKpzWAGgw1UCvclo66zBwnbJEBUqyjHED8a7sg=
+gitlab.com/tokend/regources v4.9.1+incompatible/go.mod h1:TL5+kcf9CCPy0cNA2SYPmmdJq8Qh4Z1Vfbyg04M9jMc=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738/go.mod h1:dnLIgRNXwCJa5e+c6mIZCrds/GIG4ncV9HhK5PX7jPg=
