@@ -181,7 +181,7 @@ gitlab.com/tokend/keypair/figurekeypair
 gitlab.com/tokend/keypair/internal
 gitlab.com/tokend/keypair/internal/crc16
 gitlab.com/tokend/keypair/internal/strkey
-# gitlab.com/tokend/regources v4.9.1+incompatible
+# gitlab.com/tokend/regources v4.9.2-0.20200918161150-47835a98daca+incompatible
 ## explicit
 gitlab.com/tokend/regources/generated
 # golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c

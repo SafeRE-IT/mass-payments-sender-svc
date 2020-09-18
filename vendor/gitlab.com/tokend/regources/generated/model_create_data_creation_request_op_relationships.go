@@ -4,7 +4,7 @@
 
 package regources
 
-type CreateAmlAlertRequestOpRelationships struct {
-	Balance *Relation `json:"balance,omitempty"`
+type CreateDataCreationRequestOpRelationships struct {
+	Owner   *Relation `json:"owner,omitempty"`
 	Request *Relation `json:"request,omitempty"`
 }
