@@ -5,6 +5,9 @@ import (
 	"net"
 	"net/http"
 
+	"gitlab.com/tokend/connectors/request"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data/pg"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/streamers"
@@ -35,17 +38,15 @@ func (s *service) run() error {
 }
 
 func (s *service) runDeferredPaymentsStreamer() {
-	processor := streamers.NewDeferredPaymentsProcessor(s.log, pg.NewRequestsQ(s.cfg.DB()))
-	maxId, err := pg.NewRequestsQ(s.cfg.DB()).GetMaxId()
-	if err != nil {
-		panic(errors.Wrap(err, "failed to get max request id"))
-	}
+	processor := streamers.NewCreateDeferredPaymentRequestProcessor(s.log, pg.NewRequestsQ(s.cfg.DB()),
+		request.NewReviewer(s.cfg), horizon.NewConnector(s.cfg.Client()), 1)
 	dest := s.cfg.Keys().Source.Address()
-	streamer := streamers.NewDeferredPaymentsStreamer(s.log, s.cfg.Client(),
-		streamers.DeferredPaymentsQueryParams{
-			Cursor:      maxId,
-			Destination: &dest,
-		}, processor)
+	streamer := streamers.NewCreateDeferredPaymentStreamer(s.cfg.Log(), processor,
+		s.cfg.Client(), streamers.RREncodeParams{
+			State:        1,
+			PendingTasks: 1,
+			Destination:  &dest,
+		})
 	go streamer.Run(context.Background())
 }
 

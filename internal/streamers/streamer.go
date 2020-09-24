@@ -23,12 +23,12 @@ type Streamer interface {
 	Run(ctx context.Context)
 }
 
-func NewCreateDeferredPayment(log *logan.Entry, processor request.PageProcessor, client client.Client,
+func NewCreateDeferredPaymentStreamer(log *logan.Entry, processor request.PageProcessor, client client.Client,
 	params RREncodeParams) Streamer {
 	return NewBaseStreamer(log, processor, client, params, "v3/create_deferred_payments_requests")
 }
 
-func NewCreateCloseDeferredPayment(log *logan.Entry, processor request.PageProcessor, client client.Client,
+func NewCreateCloseDeferredPaymentStreamer(log *logan.Entry, processor request.PageProcessor, client client.Client,
 	params RREncodeParams) Streamer {
 	return NewBaseStreamer(log, processor, client, params, "v3/create_close_deferred_payments_requests")
 }

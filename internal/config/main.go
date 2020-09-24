@@ -6,8 +6,10 @@ import (
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/kit/kv"
 	"gitlab.com/distributed_lab/kit/pgdb"
+	"gitlab.com/tokend/connectors/builder"
 	"gitlab.com/tokend/connectors/keyer"
 	"gitlab.com/tokend/connectors/signed"
+	"gitlab.com/tokend/connectors/submit"
 )
 
 type Config interface {
@@ -17,6 +19,8 @@ type Config interface {
 	comfig.Listenerer
 	signed.Clienter
 	keyer.Keyer
+	submit.Submission
+	builder.Builderer
 	Doorman
 }
 
@@ -27,6 +31,8 @@ type config struct {
 	comfig.Listenerer
 	signed.Clienter
 	keyer.Keyer
+	submit.Submission
+	builder.Builderer
 	Doorman
 	getter kv.Getter
 }
@@ -41,5 +47,7 @@ func New(getter kv.Getter) Config {
 		Clienter:   signed.NewClienter(getter),
 		Keyer:      keyer.NewKeyer(getter),
 		Doorman:    NewDoorman(getter),
+		Submission: submit.NewSubmission(getter),
+		Builderer:  builder.NewBuilderer(getter),
 	}
 }

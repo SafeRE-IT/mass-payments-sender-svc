@@ -153,13 +153,14 @@ gitlab.com/distributed_lab/urlval/internal
 gitlab.com/distributed_lab/urlval/internal/betterreflect
 # gitlab.com/tokend/connectors v0.1.3
 ## explicit
+gitlab.com/tokend/connectors/builder
 gitlab.com/tokend/connectors/keyer
 gitlab.com/tokend/connectors/keyvalue
 gitlab.com/tokend/connectors/lazyinfo
 gitlab.com/tokend/connectors/request
 gitlab.com/tokend/connectors/signed
 gitlab.com/tokend/connectors/submit
-# gitlab.com/tokend/go v3.13.0+incompatible
+# gitlab.com/tokend/go v3.13.1-0.20200913234706-7f8cf8f15ec7+incompatible
 ## explicit
 gitlab.com/tokend/go/amount
 gitlab.com/tokend/go/crc16
