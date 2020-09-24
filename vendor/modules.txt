@@ -156,6 +156,7 @@ gitlab.com/distributed_lab/urlval/internal/betterreflect
 gitlab.com/tokend/connectors/keyer
 gitlab.com/tokend/connectors/keyvalue
 gitlab.com/tokend/connectors/lazyinfo
+gitlab.com/tokend/connectors/request
 gitlab.com/tokend/connectors/signed
 gitlab.com/tokend/connectors/submit
 # gitlab.com/tokend/go v3.13.0+incompatible

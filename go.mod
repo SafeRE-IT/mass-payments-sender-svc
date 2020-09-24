@@ -24,7 +24,7 @@ require (
 	gitlab.com/distributed_lab/kit v1.8.1
 	gitlab.com/distributed_lab/logan v3.7.2+incompatible
 	gitlab.com/distributed_lab/lorem v0.2.0 // indirect
-	gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c // indirect
+	gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c
 	gitlab.com/distributed_lab/urlval v2.2.0+incompatible
 	gitlab.com/tokend/connectors v0.1.3
 	gitlab.com/tokend/go v3.13.0+incompatible
