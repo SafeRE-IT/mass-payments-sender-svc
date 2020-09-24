@@ -68,6 +68,7 @@ func (q *requestsQ) Insert(requests ...data.Request) ([]data.Request, error) {
 		"owner",
 		"status",
 		"failure_reason",
+		"lockup_until",
 	}
 	stmt := sq.Insert(requestsTableName).Columns(names...)
 	for _, item := range requests {
@@ -76,6 +77,7 @@ func (q *requestsQ) Insert(requests ...data.Request) ([]data.Request, error) {
 			item.Owner,
 			item.Status,
 			item.FailureReason,
+			item.LockupUntil,
 		}...)
 	}
 
@@ -152,6 +154,7 @@ func (q *requestsQ) InsertPayments(txs ...data.Payment) ([]data.Payment, error) 
 			item.FailureReason,
 			item.Amount,
 			item.Destination,
+			item.DestinationType,
 		}...)
 	}
 

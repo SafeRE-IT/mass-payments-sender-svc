@@ -94,6 +94,9 @@ func (p *createDeferredPaymentRequestProcessor) processDeferredPayment(r regourc
 	}
 
 	res, err := p.approve(r)
+	if err != nil {
+		return errors.Wrap(err, "failed to approve request")
+	}
 	deferredPaymentID := int64(res.Success.TypeExt.CreateDeferredPaymentResult.DeferredPaymentId)
 
 	paymentsBatches := convertToDbPayments(deferredPaymentID, rawPaymentsBatches)
@@ -159,7 +162,7 @@ func convertToDbPayments(requestId int64, rawPayments [][]rawPayment) [][]data.P
 		}
 		result = append(result, resultBatch)
 	}
-	return nil
+	return result
 }
 
 type detailsContent struct {

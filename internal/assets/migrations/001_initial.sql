@@ -21,4 +21,4 @@ create table payments (
 -- +migrate Down
 
 drop table requests;
-drop table transactions;
+drop table payments;
