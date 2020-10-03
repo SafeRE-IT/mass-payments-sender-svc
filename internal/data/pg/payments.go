@@ -96,6 +96,11 @@ func (q *transactionsQ) Limit(limit uint64) data.PaymentsQ {
 	return q
 }
 
+func (q *transactionsQ) SetTxBody(txBody string) data.PaymentsQ {
+	q.sqlUpdate = q.sqlUpdate.Set("tx_body", txBody)
+	return q
+}
+
 func (q *transactionsQ) SetStatus(status data.PaymentStatus) data.PaymentsQ {
 	q.sqlUpdate = q.sqlUpdate.Set("status", status)
 	return q

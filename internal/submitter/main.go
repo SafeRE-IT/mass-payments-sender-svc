@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"gitlab.com/tokend/go/xdr"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
@@ -109,5 +111,21 @@ func (s *Submitter) processTx(ctx context.Context, payment data.Payment) error {
 
 func (s *Submitter) sendPayment(ctx context.Context, payment data.Payment) error {
 	s.log.Info(fmt.Sprintf("sending payment %d", payment.ID))
+
+	// Get tx from db
+	// If has send
+
+	// Get account_id
+	// If hasn't skip
+
+	// Build tx
+
+	// Save to db
+
+	// Send to core
 	return nil
+}
+
+func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (xdr.TransactionEnvelope, error) {
+	return xdr.TransactionEnvelope{}, nil
 }

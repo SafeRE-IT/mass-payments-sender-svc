@@ -13,9 +13,10 @@ create table payments (
     request_id bigint not null references requests(id) on delete cascade,
     status text not null,
     failure_reason text,
-    amount bigint,
-    destination text,
-    destination_type text
+    amount bigint not null,
+    destination text not null,
+    destination_type text not null,
+    tx_body text
 );
 
 -- +migrate Down

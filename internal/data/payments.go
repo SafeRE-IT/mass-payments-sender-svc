@@ -48,4 +48,5 @@ type Payment struct {
 	Amount          regources.Amount `db:"amount" structs:"amount"`
 	Destination     string           `db:"destination" structs:"destination"`
 	DestinationType string           `db:"destination_type" structs:"destination_type"`
+	TxBody          *string          `db:"tx_body" structs:"tx_body"`
 }
