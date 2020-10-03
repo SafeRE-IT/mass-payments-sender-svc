@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (c *Connector) GetIdentities(value, valueType string) (*IdentityData, error) {
+func (c *Connector) GetIdentity(value, valueType string) (*IdentityData, error) {
 	path, err := url.Parse(
 		fmt.Sprintf("/integrations/identity-storage/identities?filter[value]=%s&filter[type]=%s?filter[status]=%s",
 			value, valueType, "active"))

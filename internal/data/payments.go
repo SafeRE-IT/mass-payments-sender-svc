@@ -22,6 +22,7 @@ type PaymentsQ interface {
 	FilterByStatus(statuses ...PaymentStatus) PaymentsQ
 	Limit(limit uint64) PaymentsQ
 
+	SetTxBody(txBody string) PaymentsQ
 	SetStatus(status PaymentStatus) PaymentsQ
 	SetFailureReason(reason string) PaymentsQ
 

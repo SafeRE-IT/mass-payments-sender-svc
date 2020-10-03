@@ -2,10 +2,7 @@ package submitter
 
 import (
 	"context"
-	"fmt"
 	"time"
-
-	"gitlab.com/tokend/go/xdr"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 
@@ -69,7 +66,19 @@ func (s *Submitter) processTx(ctx context.Context, payment data.Payment) error {
 	log.Debug("sending transaction")
 	defer log.Debug("payment sent")
 
-	err := s.sendPayment(ctx, payment)
+	var err error
+	if payment.TxBody == nil {
+		payment.TxBody, err = s.buildCloseDeferredPaymentTx(payment)
+		if err != nil {
+			return errors.Wrap(err, "failed to build tx")
+		}
+		if payment.TxBody == nil {
+			s.log.Infof("skiping payment %d", payment.ID)
+			return nil
+		}
+		_, err = s.paymentsQ.SetTxBody(*payment.TxBody).FilterByID(payment.ID).Update()
+	}
+	_, err = s.horizonClient.Submit(ctx, *payment.TxBody, false)
 	if err != nil {
 		if err, ok := err.(*submit.TxFailure); ok {
 			s.log.WithError(err).
@@ -109,23 +118,22 @@ func (s *Submitter) processTx(ctx context.Context, payment data.Payment) error {
 	})
 }
 
-func (s *Submitter) sendPayment(ctx context.Context, payment data.Payment) error {
-	s.log.Info(fmt.Sprintf("sending payment %d", payment.ID))
+func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, error) {
+	if payment.DestinationType != data.DestinationTypeAccountID {
+		identityData, err := s.horizonClient.GetIdentity(payment.Destination, payment.DestinationType)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get identities data")
+		}
+		if identityData == nil {
+			s.log.Infof("identity not found for payment %d", payment.ID)
+			return nil, nil
+		}
 
-	// Get tx from db
-	// If has send
-
-	// Get account_id
-	// If hasn't skip
+		payment.Destination = identityData.Relationships.Account.Data.ID
+		payment.DestinationType = data.DestinationTypeAccountID
+	}
 
 	// Build tx
 
-	// Save to db
-
-	// Send to core
-	return nil
-}
-
-func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (xdr.TransactionEnvelope, error) {
-	return xdr.TransactionEnvelope{}, nil
+	return nil, nil
 }
