@@ -5,6 +5,8 @@ import (
 	"net"
 	"net/http"
 
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/submitter"
+
 	"gitlab.com/tokend/connectors/request"
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 
@@ -27,6 +29,7 @@ type service struct {
 
 func (s *service) run() error {
 	s.runDeferredPaymentsStreamer()
+	s.runSubmitter()
 
 	r := s.router()
 
@@ -35,6 +38,13 @@ func (s *service) run() error {
 	}
 
 	return http.Serve(s.listener, r)
+}
+
+func (s *service) runSubmitter() {
+	horizonClient := horizon.NewConnector(s.cfg.Client())
+	go submitter.
+		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), horizonClient).
+		Run(context.Background(), s.cfg.MassPaymentsSenderConfig().TxsPerPeriod, uint64(s.cfg.MassPaymentsSenderConfig().TxsPerPeriod))
 }
 
 func (s *service) runDeferredPaymentsStreamer() {
