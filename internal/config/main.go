@@ -22,6 +22,7 @@ type Config interface {
 	submit.Submission
 	builder.Builderer
 	Doorman
+	MassPaymentsSenderConfiger
 }
 
 type config struct {
@@ -34,20 +35,22 @@ type config struct {
 	submit.Submission
 	builder.Builderer
 	Doorman
+	MassPaymentsSenderConfiger
 	getter kv.Getter
 }
 
 func New(getter kv.Getter) Config {
 	return &config{
-		getter:     getter,
-		Databaser:  pgdb.NewDatabaser(getter),
-		Copuser:    copus.NewCopuser(getter),
-		Listenerer: comfig.NewListenerer(getter),
-		Logger:     comfig.NewLogger(getter, comfig.LoggerOpts{}),
-		Clienter:   signed.NewClienter(getter),
-		Keyer:      keyer.NewKeyer(getter),
-		Doorman:    NewDoorman(getter),
-		Submission: submit.NewSubmission(getter),
-		Builderer:  builder.NewBuilderer(getter),
+		getter:                     getter,
+		Databaser:                  pgdb.NewDatabaser(getter),
+		Copuser:                    copus.NewCopuser(getter),
+		Listenerer:                 comfig.NewListenerer(getter),
+		Logger:                     comfig.NewLogger(getter, comfig.LoggerOpts{}),
+		Clienter:                   signed.NewClienter(getter),
+		Keyer:                      keyer.NewKeyer(getter),
+		Doorman:                    NewDoorman(getter),
+		Submission:                 submit.NewSubmission(getter),
+		Builderer:                  builder.NewBuilderer(getter),
+		MassPaymentsSenderConfiger: NewMassPaymentsSenderConfiger(getter),
 	}
 }
