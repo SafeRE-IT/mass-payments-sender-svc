@@ -35,6 +35,7 @@ func (s *service) router() chi.Router {
 	)
 
 	r.Route("/integrations/mass-payments", func(r chi.Router) {
+		r.Get("/info", handlers.GetInfo)
 		r.Route("/requests", func(r chi.Router) {
 			r.Get("/", handlers.GetRequestsList)
 			r.Get("/{id}", handlers.GetRequest)

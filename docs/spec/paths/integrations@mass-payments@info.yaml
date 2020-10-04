@@ -1,0 +1,16 @@
+get:
+  tags:
+    - Info
+  summary: Get info
+  operationId: getInfo
+  responses:
+    '200':
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: '#/components/schemas/Info'
