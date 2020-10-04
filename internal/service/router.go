@@ -30,6 +30,7 @@ func (s *service) router() chi.Router {
 				s.cfg.SkipSignCheck(),
 				horizonClient),
 			),
+			handlers.CtxKeys(s.cfg.Keys().Source),
 		),
 	)
 

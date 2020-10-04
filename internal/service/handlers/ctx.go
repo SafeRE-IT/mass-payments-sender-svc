@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"gitlab.com/tokend/keypair"
+
 	"gitlab.com/tokend/go/doorman"
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
 	regources "gitlab.com/tokend/regources/generated"
@@ -19,6 +21,7 @@ const (
 	paymentsQCtxKey
 	horizonStateCtxKey
 	doormanCtxKey
+	keysCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -70,4 +73,14 @@ func CtxDoorman(d doorman.Doorman) func(context.Context) context.Context {
 func Doorman(r *http.Request, constraints ...doorman.SignerConstraint) error {
 	d := r.Context().Value(doormanCtxKey).(doorman.Doorman)
 	return d.Check(r, constraints...)
+}
+
+func CtxKeys(entry keypair.Address) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, keysCtxKey, entry)
+	}
+}
+
+func Keys(r *http.Request) keypair.Address {
+	return r.Context().Value(keysCtxKey).(keypair.Address)
 }
