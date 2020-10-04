@@ -11,7 +11,6 @@ type CreateDeferredPayment struct {
 	SourceBalance      string
 	DestinationAccount string
 	Amount             uint64
-	FeeData            Fee
 	Details            json.Marshaler
 }
 
@@ -42,17 +41,6 @@ func (op *CreateDeferredPayment) XDR() (*xdr.Operation, error) {
 					SourceBalance: sb,
 					Destination:   da,
 					Amount:        xdr.Uint64(op.Amount),
-					FeeData: xdr.PaymentFeeData{
-						SourceFee: xdr.Fee{
-							Fixed:   xdr.Uint64(op.FeeData.SourceFixed),
-							Percent: xdr.Uint64(op.FeeData.SourcePercent),
-						},
-						DestinationFee: xdr.Fee{
-							Fixed:   xdr.Uint64(op.FeeData.DestinationFixed),
-							Percent: xdr.Uint64(op.FeeData.DestinationPercent),
-						},
-						SourcePaysForDest: op.FeeData.SourcePaysForDest,
-					},
 					CreatorDetails: xdr.Longstring(details),
 					Ext:            xdr.EmptyExt{},
 				},

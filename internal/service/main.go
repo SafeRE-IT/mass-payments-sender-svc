@@ -43,7 +43,7 @@ func (s *service) run() error {
 func (s *service) runSubmitter() {
 	horizonClient := horizon.NewConnector(s.cfg.Client())
 	go submitter.
-		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), horizonClient).
+		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), horizonClient, s.cfg.Keys().Signer, s.cfg.Keys().Source).
 		Run(context.Background(), s.cfg.MassPaymentsSenderConfig().TxsPerPeriod, uint64(s.cfg.MassPaymentsSenderConfig().TxsPerPeriod))
 }
 

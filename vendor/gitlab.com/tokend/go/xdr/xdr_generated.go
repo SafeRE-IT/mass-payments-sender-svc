@@ -1,4 +1,4 @@
-// revision: 868cd261ba9b031ae894c39a458c6d22a917915c
+// revision: 2d66fe9f7016a264f24267b49e8c076df9229c93
 // branch:   feature/deferred-payment
 // Package xdr is generated from:
 //
@@ -1898,7 +1898,8 @@ type DataEntry struct {
 //        uint64 id;
 //
 //        uint64 amount;
-//        PaymentFeeData feeData;
+//
+//        longstring details;
 //
 //        //: Creator of the entry
 //        AccountID source;
@@ -1911,13 +1912,13 @@ type DataEntry struct {
 //    };
 //
 type DeferredPaymentEntry struct {
-	Id            Uint64         `json:"id,omitempty"`
-	Amount        Uint64         `json:"amount,omitempty"`
-	FeeData       PaymentFeeData `json:"feeData,omitempty"`
-	Source        AccountId      `json:"source,omitempty"`
-	SourceBalance BalanceId      `json:"sourceBalance,omitempty"`
-	Destination   AccountId      `json:"destination,omitempty"`
-	Ext           EmptyExt       `json:"ext,omitempty"`
+	Id            Uint64     `json:"id,omitempty"`
+	Amount        Uint64     `json:"amount,omitempty"`
+	Details       Longstring `json:"details,omitempty"`
+	Source        AccountId  `json:"source,omitempty"`
+	SourceBalance BalanceId  `json:"sourceBalance,omitempty"`
+	Destination   AccountId  `json:"destination,omitempty"`
+	Ext           EmptyExt   `json:"ext,omitempty"`
 }
 
 // ExternalSystemAccountIdPoolEntryExt is an XDR NestedUnion defines as:
@@ -18074,22 +18075,15 @@ func (e *CloseDeferredPaymentEffect) UnmarshalJSON(data []byte) error {
 //
 //        CloseDeferredPaymentEffect effect;
 //
-//        uint64 deferredPaymentRemainder;
-//
-//        uint64 totalFee;
-//        uint64 totalAmount;
 //        EmptyExt ext;
 //    };
 //
 type CloseDeferredPaymentResult struct {
-	DeferredPaymentId        Uint64                     `json:"deferredPaymentID,omitempty"`
-	Destination              AccountId                  `json:"destination,omitempty"`
-	DestinationBalance       BalanceId                  `json:"destinationBalance,omitempty"`
-	Effect                   CloseDeferredPaymentEffect `json:"effect,omitempty"`
-	DeferredPaymentRemainder Uint64                     `json:"deferredPaymentRemainder,omitempty"`
-	TotalFee                 Uint64                     `json:"totalFee,omitempty"`
-	TotalAmount              Uint64                     `json:"totalAmount,omitempty"`
-	Ext                      EmptyExt                   `json:"ext,omitempty"`
+	DeferredPaymentId  Uint64                     `json:"deferredPaymentID,omitempty"`
+	Destination        AccountId                  `json:"destination,omitempty"`
+	DestinationBalance BalanceId                  `json:"destinationBalance,omitempty"`
+	Effect             CloseDeferredPaymentEffect `json:"effect,omitempty"`
+	Ext                EmptyExt                   `json:"ext,omitempty"`
 }
 
 // CreateCloseDeferredPaymentRequestSuccessExt is an XDR NestedUnion defines as:
@@ -41455,8 +41449,6 @@ type AtomicSwapBidExtended struct {
 //        uint64 deferredPaymentID;
 //        AccountID destination;
 //        AccountID source;
-//        uint64 totalFee;
-//        uint64 totalAmount;
 //
 //        EmptyExt ext;
 //    };
@@ -41465,8 +41457,6 @@ type CreateDeferredPaymentResult struct {
 	DeferredPaymentId Uint64    `json:"deferredPaymentID,omitempty"`
 	Destination       AccountId `json:"destination,omitempty"`
 	Source            AccountId `json:"source,omitempty"`
-	TotalFee          Uint64    `json:"totalFee,omitempty"`
-	TotalAmount       Uint64    `json:"totalAmount,omitempty"`
 	Ext               EmptyExt  `json:"ext,omitempty"`
 }
 
@@ -49314,18 +49304,225 @@ type ChangeRoleRequest struct {
 	Ext                ChangeRoleRequestExt `json:"ext,omitempty"`
 }
 
+// CloseDeferredPaymentDestinationType is an XDR Enum defines as:
+//
+//   //: Defines the type of destination of the payment
+//    enum CloseDeferredPaymentDestinationType {
+//        ACCOUNT = 0,
+//        BALANCE = 1
+//    };
+//
+type CloseDeferredPaymentDestinationType int32
+
+const (
+	CloseDeferredPaymentDestinationTypeAccount CloseDeferredPaymentDestinationType = 0
+	CloseDeferredPaymentDestinationTypeBalance CloseDeferredPaymentDestinationType = 1
+)
+
+var CloseDeferredPaymentDestinationTypeAll = []CloseDeferredPaymentDestinationType{
+	CloseDeferredPaymentDestinationTypeAccount,
+	CloseDeferredPaymentDestinationTypeBalance,
+}
+
+var closeDeferredPaymentDestinationTypeMap = map[int32]string{
+	0: "CloseDeferredPaymentDestinationTypeAccount",
+	1: "CloseDeferredPaymentDestinationTypeBalance",
+}
+
+var closeDeferredPaymentDestinationTypeShortMap = map[int32]string{
+	0: "account",
+	1: "balance",
+}
+
+var closeDeferredPaymentDestinationTypeRevMap = map[string]int32{
+	"CloseDeferredPaymentDestinationTypeAccount": 0,
+	"CloseDeferredPaymentDestinationTypeBalance": 1,
+}
+
+// ValidEnum validates a proposed value for this enum.  Implements
+// the Enum interface for CloseDeferredPaymentDestinationType
+func (e CloseDeferredPaymentDestinationType) ValidEnum(v int32) bool {
+	_, ok := closeDeferredPaymentDestinationTypeMap[v]
+	return ok
+}
+func (e CloseDeferredPaymentDestinationType) isFlag() bool {
+	for i := len(CloseDeferredPaymentDestinationTypeAll) - 1; i >= 0; i-- {
+		expected := CloseDeferredPaymentDestinationType(2) << uint64(len(CloseDeferredPaymentDestinationTypeAll)-1) >> uint64(len(CloseDeferredPaymentDestinationTypeAll)-i)
+		if expected != CloseDeferredPaymentDestinationTypeAll[i] {
+			return false
+		}
+	}
+	return true
+}
+
+// String returns the name of `e`
+func (e CloseDeferredPaymentDestinationType) String() string {
+	name, _ := closeDeferredPaymentDestinationTypeMap[int32(e)]
+	return name
+}
+
+func (e CloseDeferredPaymentDestinationType) ShortString() string {
+	name, _ := closeDeferredPaymentDestinationTypeShortMap[int32(e)]
+	return name
+}
+
+func (e CloseDeferredPaymentDestinationType) MarshalJSON() ([]byte, error) {
+	if e.isFlag() {
+		// marshal as mask
+		result := flag{
+			Value: int32(e),
+			Flags: make([]flagValue, 0),
+		}
+		for _, value := range CloseDeferredPaymentDestinationTypeAll {
+			if (value & e) == value {
+				result.Flags = append(result.Flags, flagValue{
+					Value: int32(value),
+					Name:  value.ShortString(),
+				})
+			}
+		}
+		return json.Marshal(&result)
+	} else {
+		// marshal as enum
+		result := enum{
+			Value:  int32(e),
+			String: e.ShortString(),
+		}
+		return json.Marshal(&result)
+	}
+}
+
+func (e *CloseDeferredPaymentDestinationType) UnmarshalJSON(data []byte) error {
+	var t value
+	if err := json.Unmarshal(data, &t); err != nil {
+		return err
+	}
+	*e = CloseDeferredPaymentDestinationType(t.Value)
+	return nil
+}
+
+// CloseDeferredPaymentRequestDestination is an XDR NestedUnion defines as:
+//
+//   union switch (CloseDeferredPaymentDestinationType type) {
+//            case ACCOUNT:
+//                AccountID accountID;
+//            case BALANCE:
+//                BalanceID balanceID;
+//        }
+//
+type CloseDeferredPaymentRequestDestination struct {
+	Type      CloseDeferredPaymentDestinationType `json:"type,omitempty"`
+	AccountId *AccountId                          `json:"accountID,omitempty"`
+	BalanceId *BalanceId                          `json:"balanceID,omitempty"`
+}
+
+// SwitchFieldName returns the field name in which this union's
+// discriminant is stored
+func (u CloseDeferredPaymentRequestDestination) SwitchFieldName() string {
+	return "Type"
+}
+
+// ArmForSwitch returns which field name should be used for storing
+// the value for an instance of CloseDeferredPaymentRequestDestination
+func (u CloseDeferredPaymentRequestDestination) ArmForSwitch(sw int32) (string, bool) {
+	switch CloseDeferredPaymentDestinationType(sw) {
+	case CloseDeferredPaymentDestinationTypeAccount:
+		return "AccountId", true
+	case CloseDeferredPaymentDestinationTypeBalance:
+		return "BalanceId", true
+	}
+	return "-", false
+}
+
+// NewCloseDeferredPaymentRequestDestination creates a new  CloseDeferredPaymentRequestDestination.
+func NewCloseDeferredPaymentRequestDestination(aType CloseDeferredPaymentDestinationType, value interface{}) (result CloseDeferredPaymentRequestDestination, err error) {
+	result.Type = aType
+	switch CloseDeferredPaymentDestinationType(aType) {
+	case CloseDeferredPaymentDestinationTypeAccount:
+		tv, ok := value.(AccountId)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be AccountId")
+			return
+		}
+		result.AccountId = &tv
+	case CloseDeferredPaymentDestinationTypeBalance:
+		tv, ok := value.(BalanceId)
+		if !ok {
+			err = fmt.Errorf("invalid value, must be BalanceId")
+			return
+		}
+		result.BalanceId = &tv
+	}
+	return
+}
+
+// MustAccountId retrieves the AccountId value from the union,
+// panicing if the value is not set.
+func (u CloseDeferredPaymentRequestDestination) MustAccountId() AccountId {
+	val, ok := u.GetAccountId()
+
+	if !ok {
+		panic("arm AccountId is not set")
+	}
+
+	return val
+}
+
+// GetAccountId retrieves the AccountId value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u CloseDeferredPaymentRequestDestination) GetAccountId() (result AccountId, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "AccountId" {
+		result = *u.AccountId
+		ok = true
+	}
+
+	return
+}
+
+// MustBalanceId retrieves the BalanceId value from the union,
+// panicing if the value is not set.
+func (u CloseDeferredPaymentRequestDestination) MustBalanceId() BalanceId {
+	val, ok := u.GetBalanceId()
+
+	if !ok {
+		panic("arm BalanceId is not set")
+	}
+
+	return val
+}
+
+// GetBalanceId retrieves the BalanceId value from the union,
+// returning ok if the union's switch indicated the value is valid.
+func (u CloseDeferredPaymentRequestDestination) GetBalanceId() (result BalanceId, ok bool) {
+	armName, _ := u.ArmForSwitch(int32(u.Type))
+
+	if armName == "BalanceId" {
+		result = *u.BalanceId
+		ok = true
+	}
+
+	return
+}
+
 // CloseDeferredPaymentRequest is an XDR Struct defines as:
 //
 //   struct CloseDeferredPaymentRequest {
 //        uint64 deferredPaymentID;
 //
-//        BalanceID destinationBalance;
+//        //: `destination` defines the type of instance that receives the payment based on given PaymentDestinationType
+//        union switch (CloseDeferredPaymentDestinationType type) {
+//            case ACCOUNT:
+//                AccountID accountID;
+//            case BALANCE:
+//                BalanceID balanceID;
+//        } destination;
 //
 //        //: Arbitrary stringified json object that can be used to attach data to be reviewed by an admin
 //        longstring creatorDetails; // details set by requester
 //
 //        uint64 amount;
-//        PaymentFeeData feeData;
 //
 //        uint32 sequenceNumber;
 //
@@ -49333,13 +49530,12 @@ type ChangeRoleRequest struct {
 //    };
 //
 type CloseDeferredPaymentRequest struct {
-	DeferredPaymentId  Uint64         `json:"deferredPaymentID,omitempty"`
-	DestinationBalance BalanceId      `json:"destinationBalance,omitempty"`
-	CreatorDetails     Longstring     `json:"creatorDetails,omitempty"`
-	Amount             Uint64         `json:"amount,omitempty"`
-	FeeData            PaymentFeeData `json:"feeData,omitempty"`
-	SequenceNumber     Uint32         `json:"sequenceNumber,omitempty"`
-	Ext                EmptyExt       `json:"ext,omitempty"`
+	DeferredPaymentId Uint64                                 `json:"deferredPaymentID,omitempty"`
+	Destination       CloseDeferredPaymentRequestDestination `json:"destination,omitempty"`
+	CreatorDetails    Longstring                             `json:"creatorDetails,omitempty"`
+	Amount            Uint64                                 `json:"amount,omitempty"`
+	SequenceNumber    Uint32                                 `json:"sequenceNumber,omitempty"`
+	Ext               EmptyExt                               `json:"ext,omitempty"`
 }
 
 // ContractRequestExt is an XDR NestedUnion defines as:
@@ -49490,7 +49686,6 @@ type DataCreationRequest struct {
 //        AccountID destination;
 //
 //        uint64 amount;
-//        PaymentFeeData feeData;
 //        uint32 sequenceNumber;
 //
 //        longstring creatorDetails; // details set by requester
@@ -49499,13 +49694,12 @@ type DataCreationRequest struct {
 //    };
 //
 type CreateDeferredPaymentRequest struct {
-	SourceBalance  BalanceId      `json:"sourceBalance,omitempty"`
-	Destination    AccountId      `json:"destination,omitempty"`
-	Amount         Uint64         `json:"amount,omitempty"`
-	FeeData        PaymentFeeData `json:"feeData,omitempty"`
-	SequenceNumber Uint32         `json:"sequenceNumber,omitempty"`
-	CreatorDetails Longstring     `json:"creatorDetails,omitempty"`
-	Ext            EmptyExt       `json:"ext,omitempty"`
+	SourceBalance  BalanceId  `json:"sourceBalance,omitempty"`
+	Destination    AccountId  `json:"destination,omitempty"`
+	Amount         Uint64     `json:"amount,omitempty"`
+	SequenceNumber Uint32     `json:"sequenceNumber,omitempty"`
+	CreatorDetails Longstring `json:"creatorDetails,omitempty"`
+	Ext            EmptyExt   `json:"ext,omitempty"`
 }
 
 // CreatePollRequestExt is an XDR NestedUnion defines as:
@@ -58610,4 +58804,4 @@ type DecoratedSignature struct {
 }
 
 var fmtTest = fmt.Sprint("this is a dummy usage of fmt")
-var Revision = "868cd261ba9b031ae894c39a458c6d22a917915c"
+var Revision = "2d66fe9f7016a264f24267b49e8c076df9229c93"

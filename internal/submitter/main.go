@@ -4,6 +4,12 @@ import (
 	"context"
 	"time"
 
+	"gitlab.com/tokend/keypair"
+
+	"gitlab.com/tokend/go/xdr"
+
+	"gitlab.com/tokend/go/xdrbuild"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
@@ -16,17 +22,22 @@ import (
 	"gitlab.com/distributed_lab/running"
 )
 
-func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, horizonClient *horizon.Connector) *Submitter {
+func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, horizonClient *horizon.Connector,
+	signer keypair.Full, source keypair.Address) *Submitter {
 	return &Submitter{
 		log:           log,
 		paymentsQ:     paymentsQ,
 		horizonClient: horizonClient,
+		signer:        signer,
+		source:        source,
 	}
 }
 
 type Submitter struct {
 	log           *logan.Entry
 	paymentsQ     data.PaymentsQ
+	signer        keypair.Full
+	source        keypair.Address
 	horizonClient *horizon.Connector
 }
 
@@ -133,7 +144,36 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		payment.DestinationType = data.DestinationTypeAccountID
 	}
 
-	// Build tx
+	horizonInfo, err := s.horizonClient.Info()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get horizon info")
+	}
 
-	return nil, nil
+	var da xdr.AccountId
+	err = da.SetAddress(payment.Destination)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get destination account id")
+	}
+	op := &xdrbuild.CloseDeferredPayment{
+		Destination: xdr.CloseDeferredPaymentRequestDestination{
+			Type:      xdr.CloseDeferredPaymentDestinationTypeAccount,
+			AccountId: &da,
+		},
+		Amount:            uint64(payment.Amount),
+		Details:           EmptyDetails{},
+		DeferredPaymentID: uint64(payment.RequestID),
+	}
+	builder := xdrbuild.NewBuilder(horizonInfo.Attributes.NetworkPassphrase, horizonInfo.Attributes.TxExpirationPeriod)
+	tx, err := builder.Transaction(s.source).Op(op).Sign(s.signer).Marshal()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to marshal transaction")
+	}
+
+	return &tx, nil
+}
+
+type EmptyDetails struct{}
+
+func (d EmptyDetails) MarshalJSON() ([]byte, error) {
+	return []byte("{}"), nil
 }
