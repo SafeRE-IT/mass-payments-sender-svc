@@ -1,0 +1,23 @@
+get:
+  tags:
+    - Payments
+  summary: Export csv with payments list
+  operationId: exportCsvPaymentsList
+  parameters:
+    - in: query
+      name: 'filter[request_id]'
+      required: false
+      schema:
+        type: string
+    - in: query
+      name: 'filter[status]'
+      required: false
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Success
+      content:
+        text/csv:
+          schema:
+            type: string
