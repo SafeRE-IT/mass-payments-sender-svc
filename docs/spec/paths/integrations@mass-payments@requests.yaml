@@ -17,6 +17,26 @@ get:
       required: false
       schema:
         type: string
+    - in: query
+      name: 'filter[asset]'
+      required: false
+      schema:
+        type: string
+    - in: query
+      name: 'filter[source_balance]'
+      required: false
+      schema:
+        type: string
+    - in: query
+      name: 'filter[from_created_at]'
+      required: false
+      schema:
+        type: string
+    - in: query
+      name: 'filter[to_created_at]'
+      required: false
+      schema:
+        type: string
   responses:
     '200':
       description: Success

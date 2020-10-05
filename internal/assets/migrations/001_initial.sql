@@ -4,7 +4,10 @@ create table requests (
     id bigint primary key,
     owner text not null,
     status text not null,
+    asset text not null,
+    source_balance text not null,
     failure_reason text,
+    created_at timestamp without time zone,
     lockup_until timestamp without time zone
 );
 

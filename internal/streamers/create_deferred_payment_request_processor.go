@@ -93,6 +93,14 @@ func (p *createDeferredPaymentRequestProcessor) processDeferredPayment(r regourc
 		return nil
 	}
 
+	sourceBalance, err := p.client.GetBalance(details.Relationships.SourceBalance.Data.ID)
+	if err != nil {
+		return errors.Wrap(err, "failed to download source balance")
+	}
+	if sourceBalance == nil {
+		return errors.New("source balance not found")
+	}
+
 	res, err := p.approve(r)
 	if err != nil {
 		return errors.Wrap(err, "failed to approve request")
@@ -102,10 +110,13 @@ func (p *createDeferredPaymentRequestProcessor) processDeferredPayment(r regourc
 	paymentsBatches := convertToDbPayments(deferredPaymentID, rawPaymentsBatches)
 
 	return p.saveRequest(data.Request{
-		ID:          deferredPaymentID,
-		Owner:       r.Relationships.Requestor.Data.ID,
-		Status:      data.RequestStatusProcessing,
-		LockupUntil: content.LockupUntil,
+		ID:            deferredPaymentID,
+		Owner:         r.Relationships.Requestor.Data.ID,
+		Status:        data.RequestStatusProcessing,
+		SourceBalance: sourceBalance.Data.ID,
+		Asset:         sourceBalance.Data.Relationships.Asset.Data.ID,
+		LockupUntil:   content.LockupUntil,
+		CreatedAt:     time.Now().UTC(),
 	}, paymentsBatches)
 }
 

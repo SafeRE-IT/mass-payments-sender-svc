@@ -53,6 +53,7 @@ func (s *service) runDeferredPaymentsStreamer() {
 	dest := s.cfg.Keys().Source.Address()
 	streamer := streamers.NewCreateDeferredPaymentStreamer(s.cfg.Log(), processor,
 		s.cfg.Client(), streamers.RREncodeParams{
+			// FIXME: Get from configs
 			State:        1,
 			PendingTasks: 1,
 			Destination:  &dest,

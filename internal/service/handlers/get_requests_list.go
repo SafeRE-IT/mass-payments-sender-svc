@@ -43,6 +43,16 @@ func GetRequestsList(w http.ResponseWriter, r *http.Request) {
 		requestsQ.FilterByStatus(statuses...)
 	}
 
+	if request.FilterSourceBalance != nil {
+		requestsQ.FilterBySourceBalance(*request.FilterSourceBalance)
+	}
+
+	if request.FilterAsset != nil {
+		requestsQ.FilterByAsset(*request.FilterAsset)
+	}
+
+	requestsQ.FilterByCreatedAt(request.FilterFromCreatedAt, request.FilterToCreatedAt)
+
 	requestsList, err := requestsQ.Select()
 	if err != nil {
 		Log(r).WithError(err).Error("failed to get requests from db")

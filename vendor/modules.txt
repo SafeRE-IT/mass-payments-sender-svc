@@ -185,7 +185,9 @@ gitlab.com/tokend/keypair/internal/crc16
 gitlab.com/tokend/keypair/internal/strkey
 # gitlab.com/tokend/regources v4.9.2-0.20200918161150-47835a98daca+incompatible
 ## explicit
+gitlab.com/tokend/regources
 gitlab.com/tokend/regources/generated
+gitlab.com/tokend/regources/v2
 # golang.org/x/crypto v0.0.0-20191122220453-ac88ee75c92c
 golang.org/x/crypto/ed25519
 golang.org/x/crypto/ed25519/internal/edwards25519

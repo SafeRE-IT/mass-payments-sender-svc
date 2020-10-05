@@ -3,6 +3,7 @@ package pg
 import (
 	"database/sql"
 	"errors"
+	"time"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
 
@@ -108,6 +109,33 @@ func (q *requestsQ) FilterByOwner(owners ...string) data.RequestsQ {
 func (q *requestsQ) FilterByStatus(statuses ...data.RequestStatus) data.RequestsQ {
 	q.sql = q.sql.Where(sq.Eq{"status": statuses})
 	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"status": statuses})
+	return q
+}
+
+func (q *requestsQ) FilterBySourceBalance(sourceBalances ...string) data.RequestsQ {
+	q.sql = q.sql.Where(sq.Eq{"source_balance": sourceBalances})
+	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"source_balance": sourceBalances})
+	return q
+}
+
+func (q *requestsQ) FilterByAsset(assets ...string) data.RequestsQ {
+	q.sql = q.sql.Where(sq.Eq{"asset": assets})
+	q.sqlUpdate = q.sqlUpdate.Where(sq.Eq{"asset": assets})
+	return q
+}
+
+func (q *requestsQ) FilterByCreatedAt(from *time.Time, to *time.Time) data.RequestsQ {
+	if from != nil {
+		stmt := sq.GtOrEq{"created_at": *from}
+		q.sql = q.sql.Where(stmt)
+		q.sqlUpdate = q.sqlUpdate.Where(stmt)
+	}
+	if to != nil {
+		stmt := sq.LtOrEq{"created_at": *to}
+		q.sql = q.sql.Where(stmt)
+		q.sqlUpdate = q.sqlUpdate.Where(stmt)
+	}
+
 	return q
 }
 
