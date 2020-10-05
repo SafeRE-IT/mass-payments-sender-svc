@@ -5,6 +5,7 @@ required:
 properties:
   id:
     type: string
+    desc: account id
   type:
     type: string
     enum:
