@@ -2,7 +2,55 @@ openapi: 3.0.0
 info:
   version: 1.0.0
   title: Mass payments sender
-  description: ''
+  description: |
+    # Service Config Example
+
+    ```yaml
+    masspayments:
+      # Time in seconds between sending transactions batch
+      sending_period: 5
+      # Transactions batch size
+      txs_per_period: 5
+
+    log:
+      disable_sentry: true
+
+    db:
+      url: db_url
+
+    keys:
+      signer: ...
+      source: ...
+
+    listener:
+      addr: :8000
+
+    client:
+      endpoint: http://...
+
+    submit:
+      endpoint: http://...
+
+    cop:
+      disabled: true
+      endpoint: "http://..."
+      upstream: "http://..."
+      service_name: op-sender-svc
+      service_port: 80
+    ```
+
+    # TokenD CLI Config Example
+
+    ```yaml
+    masspayments:
+      image: tokend/mass-payments-sender-svc:1.0.0
+      signer: SAMJKTZVW5UOHCDK5INYJNORF2HRKYI72M5XSZCBYAHQHR34FFR4Z6G4
+      source: GBA4EX43M25UPV4WIE6RRMQOFTWXZZRIPFAI5VPY6Z2ZVVXVWZ6NEOOB
+      database:
+        local: true
+      sentry:
+        disabled: true
+    ```
 
 servers:
   - url: 'https://api.demo.tokend.io'
