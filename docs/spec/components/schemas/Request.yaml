@@ -25,5 +25,9 @@ allOf:
             format: time.Time
           status:
             type: string
+            enum:
+              - processing
+              - failed
+              - success
           failure_reason:
             type: string
