@@ -52,6 +52,41 @@ info:
         disabled: true
     ```
 
+    # Create mass payment request
+
+    Send create deferred payment request and specify in details:
+
+    ```json
+    {
+      "blobs": ["<blob_id>"],
+      "lockup_until": "RFC 3339 encoded time" # optional
+    }
+    ```
+
+    Each blob should have such content:
+
+    ```json
+    [
+      {
+        "amount": "10.00",
+        "destination": "identifier",
+        "destination_type": "identifier_type" # account_id in case of using account_id or key from identity storage
+      }
+    ]
+    ```
+
+    You should specify not more than 1000 payments in 1 blob
+
+    # Cancel mass payment and unlock money
+
+    Send close deferred payment and specify account of deferred payment creator as destination. In create details you should specify list of ids wich should be canceled by this request.
+
+    ```json
+    {
+      payments_to_cancel: [1]
+    }
+    ```
+
 servers:
   - url: 'https://api.demo.tokend.io'
     description: TokenD Developer Environment
