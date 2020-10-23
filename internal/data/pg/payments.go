@@ -68,7 +68,7 @@ func (q *transactionsQ) Transaction(fn func(q data.PaymentsQ) error) error {
 }
 
 func (q *transactionsQ) Page(pageParams pgdb.OffsetPageParams) data.PaymentsQ {
-	q.sql = pageParams.ApplyTo(q.sql, "hash")
+	q.sql = pageParams.ApplyTo(q.sql, "id")
 	return q
 }
 
