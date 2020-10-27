@@ -39,10 +39,10 @@ func (s *service) router() chi.Router {
 		r.Route("/requests", func(r chi.Router) {
 			r.Get("/", handlers.GetRequestsList)
 			r.Get("/{id}", handlers.GetRequest)
-			r.Get("/csv", handlers.GetPaymentsListCsv)
 		})
 		r.Route("/payments", func(r chi.Router) {
 			r.Get("/", handlers.GetPaymentsList)
+			r.Get("/csv", handlers.GetPaymentsListCsv)
 		})
 	})
 
