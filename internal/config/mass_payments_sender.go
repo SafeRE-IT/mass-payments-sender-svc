@@ -8,8 +8,9 @@ import (
 )
 
 type MassPaymentsSenderConfig struct {
-	SendingPeriod int64 `figure:"sending_period"`
-	TxsPerPeriod  int64 `figure:"txs_per_period"`
+	SendingPeriod int64  `figure:"sending_period"`
+	TxsPerPeriod  int64  `figure:"txs_per_period"`
+	Tasks         uint32 `figure:"tasks"`
 }
 
 type MassPaymentsSenderConfiger interface {
@@ -32,6 +33,7 @@ func (c *massPaymentsSender) MassPaymentsSenderConfig() MassPaymentsSenderConfig
 		config := MassPaymentsSenderConfig{
 			SendingPeriod: 5,
 			TxsPerPeriod:  5,
+			Tasks:         1,
 		}
 
 		err := figure.

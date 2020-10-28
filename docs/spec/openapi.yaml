@@ -11,6 +11,7 @@ info:
       sending_period: 5
       # Transactions batch size
       txs_per_period: 5
+      tasks: 1
 
     log:
       disable_sentry: true
