@@ -35,6 +35,7 @@ const (
 	PaymentStatusProcessing PaymentStatus = "processing"
 	PaymentStatusFailed     PaymentStatus = "failed"
 	PaymentStatusSuccess    PaymentStatus = "success"
+	PaymentStatusReturned   PaymentStatus = "returned"
 )
 
 const (
