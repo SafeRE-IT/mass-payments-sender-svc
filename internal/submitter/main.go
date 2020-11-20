@@ -79,7 +79,7 @@ func (s *Submitter) processTx(ctx context.Context, payment data.Payment) error {
 	log.Debug("sending transaction")
 	defer log.Debug("payment sent")
 
-	request, err := s.requestsQ.FilterByID(payment.RequestID).Get()
+	request, err := s.requestsQ.New().FilterByID(payment.RequestID).Get()
 	if err != nil {
 		return errors.Wrap(err, "failed to get request for payment")
 	}
@@ -162,7 +162,7 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 			s.log.Infof("skiping payment %d", payment.ID)
 			return nil
 		}
-		_, err = s.paymentsQ.SetTxBody(*payment.TxBody).FilterByID(payment.ID).Update()
+		_, err = s.paymentsQ.New().SetTxBody(*payment.TxBody).FilterByID(payment.ID).Update()
 	}
 	_, err = s.horizonClient.Submit(ctx, *payment.TxBody, false)
 	if err != nil {
