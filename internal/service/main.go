@@ -44,7 +44,7 @@ func (s *service) runSubmitter() {
 	horizonClient := horizon.NewConnector(s.cfg.Client())
 	go submitter.
 		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), pg.NewRequestsQ(s.cfg.DB()), horizonClient, s.cfg.Keys().Signer, s.cfg.Keys().Source).
-		Run(context.Background(), s.cfg.MassPaymentsSenderConfig().TxsPerPeriod, uint64(s.cfg.MassPaymentsSenderConfig().TxsPerPeriod))
+		Run(context.Background(), s.cfg.MassPaymentsSenderConfig().SendingPeriod, uint64(s.cfg.MassPaymentsSenderConfig().TxsPerPeriod))
 }
 
 func (s *service) runDeferredPaymentsStreamer() {
