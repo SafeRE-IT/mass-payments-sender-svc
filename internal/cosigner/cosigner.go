@@ -36,6 +36,10 @@ type cosigner struct {
 }
 
 func (c *cosigner) Cosign(txBase64 string) (string, error) {
+	if c.disabled {
+		return txBase64, nil
+	}
+
 	var err error
 	for _, connector := range c.connectors {
 		txBase64, err = connector.SignTx(txBase64)
