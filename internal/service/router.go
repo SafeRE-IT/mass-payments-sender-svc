@@ -31,6 +31,8 @@ func (s *service) router() chi.Router {
 				horizonClient),
 			),
 			handlers.CtxKeys(s.cfg.Keys().Source),
+			handlers.CtxSigner(s.cfg.Keys().Signer),
+			handlers.CtxXdrBuilder(s.cfg.Builder()),
 		),
 	)
 
@@ -44,6 +46,7 @@ func (s *service) router() chi.Router {
 			r.Get("/", handlers.GetPaymentsList)
 			r.Get("/csv", handlers.GetPaymentsListCsv)
 		})
+		r.Post("/sign", handlers.SignTx)
 	})
 
 	return r

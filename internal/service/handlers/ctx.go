@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"gitlab.com/tokend/go/xdrbuild"
+
 	"gitlab.com/tokend/keypair"
 
 	"gitlab.com/tokend/go/doorman"
@@ -22,6 +24,8 @@ const (
 	horizonStateCtxKey
 	doormanCtxKey
 	keysCtxKey
+	signerCtxKey
+	xdrBuilderCtxKey
 )
 
 func CtxLog(entry *logan.Entry) func(context.Context) context.Context {
@@ -83,4 +87,24 @@ func CtxKeys(entry keypair.Address) func(context.Context) context.Context {
 
 func Keys(r *http.Request) keypair.Address {
 	return r.Context().Value(keysCtxKey).(keypair.Address)
+}
+
+func CtxSigner(entry keypair.Full) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, signerCtxKey, entry)
+	}
+}
+
+func Signer(r *http.Request) keypair.Full {
+	return r.Context().Value(signerCtxKey).(keypair.Full)
+}
+
+func CtxXdrBuilder(entry *xdrbuild.Builder) func(context.Context) context.Context {
+	return func(ctx context.Context) context.Context {
+		return context.WithValue(ctx, xdrBuilderCtxKey, entry)
+	}
+}
+
+func XdrBuilder(r *http.Request) *xdrbuild.Builder {
+	return r.Context().Value(xdrBuilderCtxKey).(*xdrbuild.Builder)
 }
