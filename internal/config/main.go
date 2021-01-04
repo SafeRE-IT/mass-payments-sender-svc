@@ -23,6 +23,7 @@ type Config interface {
 	builder.Builderer
 	Doorman
 	MassPaymentsSenderConfiger
+	Decentralizationer
 }
 
 type config struct {
@@ -36,6 +37,7 @@ type config struct {
 	builder.Builderer
 	Doorman
 	MassPaymentsSenderConfiger
+	Decentralizationer
 	getter kv.Getter
 }
 
@@ -52,5 +54,6 @@ func New(getter kv.Getter) Config {
 		Submission:                 submit.NewSubmission(getter),
 		Builderer:                  builder.NewBuilderer(getter),
 		MassPaymentsSenderConfiger: NewMassPaymentsSenderConfiger(getter),
+		Decentralizationer:         NewDecentralizationer(getter),
 	}
 }

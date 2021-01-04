@@ -5,9 +5,12 @@ import (
 	"net"
 	"net/http"
 
+	"gitlab.com/tokend/go/xdrbuild"
+
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/submitter"
 
-	"gitlab.com/tokend/connectors/request"
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 
 	"gitlab.com/tokend/mass-payments-sender-svc/internal/data/pg"
@@ -28,8 +31,10 @@ type service struct {
 }
 
 func (s *service) run() error {
-	s.runDeferredPaymentsStreamer()
-	s.runSubmitter()
+	if s.cfg.DecentralizationConfig().IsCoordinator && s.cfg.DecentralizationConfig().Disabled {
+		s.runDeferredPaymentsStreamer()
+		s.runSubmitter()
+	}
 
 	r := s.router()
 
@@ -43,13 +48,21 @@ func (s *service) run() error {
 func (s *service) runSubmitter() {
 	horizonClient := horizon.NewConnector(s.cfg.Client())
 	go submitter.
-		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), pg.NewRequestsQ(s.cfg.DB()), horizonClient, s.cfg.Keys().Signer, s.cfg.Keys().Source).
+		NewSubmitter(s.log, pg.NewPaymentsQ(s.cfg.DB()), pg.NewRequestsQ(s.cfg.DB()), horizonClient, s.cfg.Keys().Signer,
+			s.cfg.Keys().Source, cosigner.NewCosigner(s.cfg.DecentralizationConfig())).
 		Run(context.Background(), s.cfg.MassPaymentsSenderConfig().SendingPeriod, uint64(s.cfg.MassPaymentsSenderConfig().TxsPerPeriod))
 }
 
 func (s *service) runDeferredPaymentsStreamer() {
+	horizonClient := horizon.NewConnector(s.cfg.Client())
+	horizonInfo, err := horizonClient.Info()
+	if err != nil {
+		panic(err)
+	}
+	builder := xdrbuild.NewBuilder(horizonInfo.Attributes.NetworkPassphrase, horizonInfo.Attributes.TxExpirationPeriod)
 	processor := streamers.NewCreateDeferredPaymentRequestProcessor(s.log, pg.NewRequestsQ(s.cfg.DB()),
-		request.NewReviewer(s.cfg), horizon.NewConnector(s.cfg.Client()), 1)
+		horizon.NewConnector(s.cfg.Client()), 1, cosigner.NewCosigner(s.cfg.DecentralizationConfig()),
+		horizonClient, builder, s.cfg.Keys().Signer, s.cfg.Keys().Source)
 	dest := s.cfg.Keys().Source.Address()
 	streamer := streamers.NewCreateDeferredPaymentStreamer(s.cfg.Log(), processor,
 		s.cfg.Client(), streamers.RREncodeParams{
