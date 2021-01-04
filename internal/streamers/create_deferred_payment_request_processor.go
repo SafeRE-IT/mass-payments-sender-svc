@@ -5,6 +5,13 @@ import (
 	"encoding/json"
 	"time"
 
+	"gitlab.com/tokend/connectors/submit"
+
+	"github.com/spf13/cast"
+
+	"gitlab.com/tokend/keypair"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+
 	"gitlab.com/tokend/go/xdr"
 
 	"gitlab.com/distributed_lab/logan/v3/errors"
@@ -18,23 +25,32 @@ import (
 	regources "gitlab.com/tokend/regources/generated"
 )
 
-func NewCreateDeferredPaymentRequestProcessor(log *logan.Entry, requestsQ data.RequestsQ, reviewer *request.Reviewer,
-	client *horizon.Connector, tasks uint32) request.PageProcessor {
+func NewCreateDeferredPaymentRequestProcessor(log *logan.Entry, requestsQ data.RequestsQ,
+	client *horizon.Connector, tasks uint32, cosigner cosigner.Cosigner, connector *horizon.Connector,
+	builder *xdrbuild.Builder, signer keypair.Full, source keypair.Address) request.PageProcessor {
 	return &createDeferredPaymentRequestProcessor{
 		log:                    log,
 		requestsQ:              requestsQ,
-		reviewer:               reviewer,
 		client:                 client,
 		reviewableRequestTasks: tasks,
+		cosigner:               cosigner,
+		connector:              connector,
+		builder:                builder,
+		signer:                 signer,
+		source:                 source,
 	}
 }
 
 type createDeferredPaymentRequestProcessor struct {
 	log                    *logan.Entry
 	requestsQ              data.RequestsQ
-	reviewer               *request.Reviewer
 	client                 *horizon.Connector
 	reviewableRequestTasks uint32
+	cosigner               cosigner.Cosigner
+	connector              *horizon.Connector
+	builder                *xdrbuild.Builder
+	signer                 keypair.Full
+	source                 keypair.Address
 }
 
 func (p *createDeferredPaymentRequestProcessor) ProcessPage(ctx context.Context, page regources.ReviewableRequestListResponse) error {
@@ -54,9 +70,10 @@ func (p *createDeferredPaymentRequestProcessor) ProcessPage(ctx context.Context,
 }
 
 func (p *createDeferredPaymentRequestProcessor) reject(r regources.ReviewableRequest, reason string) error {
-	_, err := p.reviewer.Reject(context.TODO(), r,
+	_, err := p.review(context.TODO(), r,
 		request.ReviewDetails{RejectReason: reason, ExternalDetails: "{}"},
-		xdrbuild.ReviewableRequestBaseDetails{RequestType: xdr.ReviewableRequestTypeCreateDeferredPayment})
+		xdrbuild.ReviewableRequestBaseDetails{RequestType: xdr.ReviewableRequestTypeCreateDeferredPayment},
+		xdr.ReviewRequestOpActionReject)
 	if err != nil {
 		return errors.Wrap(err, "failed to reject request")
 	}
@@ -65,10 +82,58 @@ func (p *createDeferredPaymentRequestProcessor) reject(r regources.ReviewableReq
 }
 
 func (p *createDeferredPaymentRequestProcessor) approve(r regources.ReviewableRequest) (*xdr.ReviewRequestResult, error) {
-	return p.reviewer.Approve(context.TODO(), r, request.ReviewDetails{
+	return p.review(context.TODO(), r, request.ReviewDetails{
 		TasksToRemove:   p.reviewableRequestTasks,
 		ExternalDetails: "{}",
-	}, xdrbuild.ReviewableRequestBaseDetails{RequestType: xdr.ReviewableRequestTypeCreateDeferredPayment})
+	}, xdrbuild.ReviewableRequestBaseDetails{RequestType: xdr.ReviewableRequestTypeCreateDeferredPayment},
+		xdr.ReviewRequestOpActionApprove)
+}
+
+func (p *createDeferredPaymentRequestProcessor) review(ctx context.Context,
+	request regources.ReviewableRequest,
+	reviewDetails request.ReviewDetails,
+	externalDetails xdrbuild.ReviewRequestDetailsProvider,
+	action xdr.ReviewRequestOpAction) (*xdr.ReviewRequestResult, error) {
+
+	id := cast.ToUint64(request.ID)
+
+	tx := p.builder.Transaction(p.source).Op(&xdrbuild.ReviewRequest{
+		ID:      id,
+		Hash:    &request.Attributes.Hash,
+		Action:  action,
+		Reason:  reviewDetails.RejectReason,
+		Details: externalDetails,
+		ReviewDetails: xdrbuild.ReviewDetails{
+			TasksToAdd:      reviewDetails.TasksToAdd,
+			TasksToRemove:   reviewDetails.TasksToRemove,
+			ExternalDetails: reviewDetails.ExternalDetails,
+		},
+	}).Sign(p.signer)
+	txBase64, err := tx.Marshal()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to marshal tx to base64")
+	}
+
+	txBase64, err = p.cosigner.Cosign(txBase64)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to cosign tx")
+	}
+
+	res, err := p.connector.Submit(ctx, txBase64, false)
+	if err != nil {
+		if serr, ok := err.(submit.TxFailure); ok {
+			err = errors.From(err, serr.GetLoganFields())
+		}
+		return nil, errors.Wrap(err, "failed to submit transaction")
+	}
+
+	var txResult xdr.TransactionResult
+	err = xdr.SafeUnmarshalBase64(res.Data.Attributes.ResultXdr, &txResult)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal transaction result")
+	}
+
+	return (*txResult.Result.Results)[0].Tr.ReviewRequestResult, nil
 }
 
 func (p *createDeferredPaymentRequestProcessor) processDeferredPayment(r regources.ReviewableRequest,

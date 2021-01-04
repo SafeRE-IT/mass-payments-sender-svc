@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+
 	"gitlab.com/tokend/keypair"
 
 	"gitlab.com/tokend/go/xdr"
@@ -23,7 +25,7 @@ import (
 )
 
 func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, requestsQ data.RequestsQ, horizonClient *horizon.Connector,
-	signer keypair.Full, source keypair.Address) *Submitter {
+	signer keypair.Full, source keypair.Address, cosigner cosigner.Cosigner) *Submitter {
 	return &Submitter{
 		log:           log,
 		paymentsQ:     paymentsQ,
@@ -31,6 +33,7 @@ func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, requestsQ data.Req
 		horizonClient: horizonClient,
 		signer:        signer,
 		source:        source,
+		cosigner:      cosigner,
 	}
 }
 
@@ -41,6 +44,7 @@ type Submitter struct {
 	signer        keypair.Full
 	source        keypair.Address
 	horizonClient *horizon.Connector
+	cosigner      cosigner.Cosigner
 }
 
 func (s *Submitter) Run(ctx context.Context, submitPeriod int64, batchSize uint64) {
@@ -164,7 +168,11 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 		}
 		_, err = s.paymentsQ.New().SetTxBody(*payment.TxBody).FilterByID(payment.ID).Update()
 	}
-	_, err = s.horizonClient.Submit(ctx, *payment.TxBody, false)
+	txEnvelope, err := s.cosigner.Cosign(*payment.TxBody)
+	if err != nil {
+		return errors.Wrap(err, "failed to cosign transaction")
+	}
+	_, err = s.horizonClient.Submit(ctx, txEnvelope, false)
 	if err != nil {
 		if err, ok := err.(*submit.TxFailure); ok {
 			s.log.WithError(err).
