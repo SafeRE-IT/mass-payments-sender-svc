@@ -101,6 +101,14 @@ info:
     }
     ```
 
+    # Service permissions
+
+    Service must be signer of the master account. Service must have permissions to:
+
+    - Review create deferred payment requests. Resource Type: `REVIEWABLE_REQUEST`, Reviewable Request Type: `CREATE_DEFERRED_PAYMENT`, Action: `REVIEW`
+    - Review close deferred payment requests. Resource Type: `REVIEWABLE_REQUEST`, Reviewable Request Type: `CLOSE_DEFERRED_PAYMENT`, Action: `REVIEW`
+    - Create close deferred payment requests. Resource Type: `REVIEWABLE_REQUEST`, Reviewable Request Type: `CLOSE_DEFERRED_PAYMENT`, Action: `CREATE`
+
 servers:
   - url: 'https://api.demo.tokend.io'
     description: TokenD Developer Environment
