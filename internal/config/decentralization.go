@@ -41,6 +41,9 @@ func (d *decentralizationer) DecentralizationConfig() DecentralizationConfig {
 		if err != nil {
 			panic(errors.Wrap(err, "failed to figure out"))
 		}
+		if len(config.Nodes) == 0 {
+			config.Disabled = true
+		}
 
 		return config
 	}).(DecentralizationConfig)
