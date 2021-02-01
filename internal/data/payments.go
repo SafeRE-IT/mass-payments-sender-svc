@@ -33,9 +33,11 @@ type PaymentStatus string
 
 const (
 	PaymentStatusProcessing PaymentStatus = "processing"
-	PaymentStatusFailed     PaymentStatus = "failed"
-	PaymentStatusSuccess    PaymentStatus = "success"
-	PaymentStatusReturned   PaymentStatus = "returned"
+	// Needed to lock payments that already sending
+	PaymentStatusSending  PaymentStatus = "sending"
+	PaymentStatusFailed   PaymentStatus = "failed"
+	PaymentStatusSuccess  PaymentStatus = "success"
+	PaymentStatusReturned PaymentStatus = "returned"
 )
 
 const (

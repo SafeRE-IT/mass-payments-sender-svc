@@ -48,6 +48,14 @@ type Submitter struct {
 }
 
 func (s *Submitter) Run(ctx context.Context, submitPeriod int64, batchSize uint64) {
+	_, err := s.paymentsQ.New().
+		FilterByStatus(data.PaymentStatusSending).
+		SetStatus(data.PaymentStatusProcessing).
+		Update()
+	if err != nil {
+		panic(errors.Wrap(err, "failed to unlock all locked transactions"))
+	}
+
 	period := time.Duration(submitPeriod)
 	running.WithBackOff(ctx, s.log, "data-streamer", func(ctx context.Context) error {
 		return s.processBatch(ctx, batchSize)
@@ -63,6 +71,18 @@ func (s *Submitter) processBatch(ctx context.Context, size uint64) error {
 		return errors.Wrap(err, "failed to get txs from db")
 	}
 
+	ids := make([]int64, len(payments))
+	for i, tx := range payments {
+		ids[i] = tx.ID
+	}
+	_, err = s.paymentsQ.New().
+		FilterByID(ids...).
+		SetStatus(data.PaymentStatusSending).
+		Update()
+	if err != nil {
+		return errors.Wrap(err, "failed to lock transactions in sending status")
+	}
+
 	for _, payment := range payments {
 		payment := payment
 		go func() {
@@ -71,6 +91,13 @@ func (s *Submitter) processBatch(ctx context.Context, size uint64) error {
 				s.log.WithError(err).
 					WithField("payment_id", payment.ID).
 					Warn("failed to submit transaction, try again later")
+				_, err := s.paymentsQ.New().
+					FilterByID(payment.ID).
+					SetStatus(data.PaymentStatusProcessing).
+					Update()
+				if err != nil {
+					s.log.WithError(err).Error("failed to update tx status to processing")
+				}
 			}
 		}()
 	}
