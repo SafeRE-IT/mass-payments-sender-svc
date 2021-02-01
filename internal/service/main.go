@@ -31,7 +31,7 @@ type service struct {
 }
 
 func (s *service) run() error {
-	if s.cfg.DecentralizationConfig().IsCoordinator && s.cfg.DecentralizationConfig().Disabled {
+	if s.cfg.DecentralizationConfig().IsCoordinator || s.cfg.DecentralizationConfig().Disabled {
 		s.runDeferredPaymentsStreamer()
 		s.runSubmitter()
 	}
