@@ -6,7 +6,7 @@ info:
     # Service Config Example
 
     ```yaml
-    masspayments:
+    mass_payments_sender:
           # Time in seconds between sending transactions batch
           sending_period: 5
           # Transactions batch size
