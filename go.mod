@@ -10,10 +10,10 @@ require (
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/getsentry/raven-go v0.2.0 // indirect
 	github.com/go-chi/chi v4.1.2+incompatible
-	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible // indirect
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gobuffalo/packr/v2 v2.8.0
 	github.com/google/jsonapi v0.0.0-20200825183604-3e3da1210d0c // indirect
-	github.com/jmoiron/sqlx v1.2.0 // indirect
+	github.com/jmoiron/sqlx v1.3.1
 	github.com/nullstyle/go-xdr v0.0.0-20180726165426-f4c839f75077 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/rubenv/sql-migrate v0.0.0-20200616145509-8d140a17f351

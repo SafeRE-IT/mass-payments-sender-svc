@@ -179,6 +179,7 @@ func (q *requestsQ) InsertPayments(txs ...data.Payment) ([]data.Payment, error) 
 		"amount",
 		"destination",
 		"destination_type",
+		"creator_details",
 	}
 	stmt := sq.Insert(paymentsTableName).Columns(names...)
 	for _, item := range txs {
@@ -189,6 +190,7 @@ func (q *requestsQ) InsertPayments(txs ...data.Payment) ([]data.Payment, error) 
 			item.Amount,
 			item.Destination,
 			item.DestinationType,
+			item.CreatorDetails,
 		}...)
 	}
 

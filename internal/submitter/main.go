@@ -254,6 +254,9 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		Details:           EmptyDetails{},
 		DeferredPaymentID: uint64(payment.RequestID),
 	}
+	if payment.CreatorDetails.Valid {
+		op.Details = payment.CreatorDetails.JSONText
+	}
 	builder := xdrbuild.NewBuilder(horizonInfo.Attributes.NetworkPassphrase, horizonInfo.Attributes.TxExpirationPeriod)
 	tx, err := builder.Transaction(s.source).Op(op).Sign(s.signer).Marshal()
 	if err != nil {

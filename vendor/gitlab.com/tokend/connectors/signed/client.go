@@ -41,7 +41,7 @@ type Client struct {
 }
 
 func (c *Client) Do(request *http.Request) (*http.Response, error) {
-	//<-c.throttle
+	<-c.throttle
 
 	// ensure content-type just in case
 	request.Header.Set("content-type", "application/json")

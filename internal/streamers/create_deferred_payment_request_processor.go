@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/jmoiron/sqlx/types"
+
 	"gitlab.com/tokend/connectors/submit"
 
 	"github.com/spf13/cast"
@@ -227,14 +229,23 @@ func convertToDbPayments(requestId int64, rawPayments [][]rawPayment) [][]data.P
 	result := make([][]data.Payment, 0)
 	for _, paymentsBatch := range rawPayments {
 		resultBatch := make([]data.Payment, len(paymentsBatch))
-		for i, payment := range paymentsBatch {
-			resultBatch[i] = data.Payment{
+		for i, rawPayment := range paymentsBatch {
+			payment := data.Payment{
 				RequestID:       requestId,
 				Status:          data.PaymentStatusProcessing,
-				Amount:          payment.Amount,
-				Destination:     payment.Destination,
-				DestinationType: payment.DestinationType,
+				Amount:          rawPayment.Amount,
+				Destination:     rawPayment.Destination,
+				DestinationType: rawPayment.DestinationType,
 			}
+
+			if rawPayment.CreatorDetails != nil {
+				payment.CreatorDetails = types.NullJSONText{
+					Valid:    true,
+					JSONText: types.JSONText(*rawPayment.CreatorDetails),
+				}
+			}
+
+			resultBatch[i] = payment
 		}
 		result = append(result, resultBatch)
 	}
@@ -250,4 +261,5 @@ type rawPayment struct {
 	Amount          regources.Amount `json:"amount"`
 	Destination     string           `json:"destination"`
 	DestinationType string           `json:"destination_type"`
+	CreatorDetails  *json.RawMessage `json:"creator_details,omitempty"`
 }

@@ -14,6 +14,7 @@ var _ = func() error {
 	const gk = "7751bdfe8d5f79a972bd24e377f55a67"
 	g := packr.New(gk, "")
 	hgr, err := resolver.NewHexGzip(map[string]string{
+		"7cd327eb1b23441f51a5215ec71a60fa": "1f8b08000000000000ff74ccb10dc2400c05d0de53fc1e6582b4ac408d9cd842877cf6c96784d89e36cd2df0b60db7de5ec9a5780c22b6d244f1618ac1bfae5e132c8233ecd31d672a57e453b4b8d9c47b861f3bd1d5b9c7d71792648c05b513d13f0000ffff1a72a3848e000000",
 		"ee8ea8be4e43b3380973423a2c0b2012": "1f8b08000000000000ff8492c14ec3300c86ef7d0a1f37c19e60575e8173e426ff46b4d4098ea3ad3c3da2dd602a1ddc227fbf95e4b3773b7a1ae251d940afa5ebbce2eb68dc2790e2bda15aa54d47441403f5f118c5a8681c58473a617c9e503e0b940c1723c946d2529a4135b656d708d70a5b6dc94d3d5ccf89c5632d71e0989ac229b866991233985f1f1c1b591c508d8742e7686fb9cd15fac882399bb23fb5e29a584c7fa5bbed7ea1a5f03840165a2a3472fa6de6ead0fdc8bbfd85140728c4a37e9bdec4b0a52c14906020cfd573c07f2a1ffae02137b1e5c5330ba816852d5e3b1e636763599d835d5c9fc338a149d3fd36bde4b3745dd05c16dbb4bf2fde5cee3f030000ffff3bd0651189020000",
 	})
 	if err != nil {
@@ -24,6 +25,7 @@ var _ = func() error {
 	func() {
 		b := packr.New("migrations", "./migrations")
 		b.SetResolver("001_initial.sql", packr.Pointer{ForwardBox: gk, ForwardPath: "ee8ea8be4e43b3380973423a2c0b2012"})
+		b.SetResolver("002_add_creator_details.sql", packr.Pointer{ForwardBox: gk, ForwardPath: "7cd327eb1b23441f51a5215ec71a60fa"})
 	}()
 	return nil
 }()
