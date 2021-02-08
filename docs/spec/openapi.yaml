@@ -91,6 +91,7 @@ info:
         "amount": "10.00",
         "destination": "identifier",
         "destination_type": "identifier_type" # account_id in case of using account_id or key from identity storage
+        "creator_details": {} # custom json, optional
       }
     ]
     ```
