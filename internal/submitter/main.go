@@ -125,64 +125,26 @@ func (s *Submitter) processTx(ctx context.Context, payment data.Payment) error {
 }
 
 func (s *Submitter) send(ctx context.Context, payment data.Payment) error {
-	err := s.sendCloseDeferredPayment(ctx, payment)
+	err := s.sendCloseDeferredPayment(ctx, payment, data.PaymentStatusSuccess)
 	if err != nil {
 		return errors.Wrap(err, "failed to send close deferred payment")
 	}
 
-	return s.paymentsQ.New().Transaction(func(q data.PaymentsQ) error {
-		_, err := q.FilterByID(payment.ID).
-			SetStatus(data.PaymentStatusSuccess).
-			Update()
-		if err != nil {
-			return errors.Wrap(err, "failed to mark transaction successes")
-		}
-		exists, err := q.Exists(payment.RequestID, data.PaymentStatusProcessing)
-		if err != nil {
-			return errors.Wrap(err, "failed to check processing transactions existence")
-		}
-		if exists {
-			err = q.UpdateRequestStatus(payment.RequestID, data.RequestStatusFinished)
-			if err != nil {
-				return errors.Wrap(err, "failed to change request status")
-			}
-		}
-
-		return nil
-	})
+	return nil
 }
 
 func (s *Submitter) unlockFunds(ctx context.Context, payment data.Payment, request data.Request) error {
 	payment.Destination = request.Owner
 	payment.DestinationType = data.DestinationTypeAccountID
-	err := s.sendCloseDeferredPayment(ctx, payment)
+	err := s.sendCloseDeferredPayment(ctx, payment, data.PaymentStatusReturned)
 	if err != nil {
 		return errors.Wrap(err, "failed to send close deferred payment")
 	}
 
-	return s.paymentsQ.New().Transaction(func(q data.PaymentsQ) error {
-		_, err := q.FilterByID(payment.ID).
-			SetStatus(data.PaymentStatusReturned).
-			Update()
-		if err != nil {
-			return errors.Wrap(err, "failed to mark transaction successes")
-		}
-		exists, err := q.Exists(payment.RequestID, data.PaymentStatusProcessing)
-		if err != nil {
-			return errors.Wrap(err, "failed to check processing transactions existence")
-		}
-		if exists {
-			err = q.UpdateRequestStatus(payment.RequestID, data.RequestStatusFinished)
-			if err != nil {
-				return errors.Wrap(err, "failed to change request status")
-			}
-		}
-
-		return nil
-	})
+	return nil
 }
 
-func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.Payment) error {
+func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.Payment, successStatus data.PaymentStatus) error {
 	var err error
 	if payment.TxBody == nil {
 		payment.TxBody, err = s.buildCloseDeferredPaymentTx(payment)
@@ -190,8 +152,7 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 			return errors.Wrap(err, "failed to build tx")
 		}
 		if payment.TxBody == nil {
-			s.log.Infof("skiping payment %d", payment.ID)
-			return nil
+			return errors.New("failed to find destination for payment")
 		}
 		_, err = s.paymentsQ.New().SetTxBody(*payment.TxBody).FilterByID(payment.ID).Update()
 	}
@@ -213,11 +174,31 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 			if err != nil {
 				return errors.Wrap(err, "failed to mark transaction failed")
 			}
+			return nil
 		}
 		return errors.Wrap(err, "failed to submit transaction")
 	}
 
-	return nil
+	return s.paymentsQ.New().Transaction(func(q data.PaymentsQ) error {
+		_, err := q.FilterByID(payment.ID).
+			SetStatus(successStatus).
+			Update()
+		if err != nil {
+			return errors.Wrap(err, "failed to mark transaction successes")
+		}
+		exists, err := q.Exists(payment.RequestID, data.PaymentStatusProcessing)
+		if err != nil {
+			return errors.Wrap(err, "failed to check processing transactions existence")
+		}
+		if exists {
+			err = q.UpdateRequestStatus(payment.RequestID, data.RequestStatusFinished)
+			if err != nil {
+				return errors.Wrap(err, "failed to change request status")
+			}
+		}
+
+		return nil
+	})
 }
 
 func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, error) {
