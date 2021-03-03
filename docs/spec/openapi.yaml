@@ -66,8 +66,6 @@ info:
       sendingperiod: 5
       txsperperiod: 5
       tasks: 1
-      database:
-        local: true
       sentry:
         disabled: true
     ```
