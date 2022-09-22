@@ -222,6 +222,8 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get destination account id")
 	}
+
+	tasks := uint32(0)
 	op := &xdrbuild.CloseDeferredPayment{
 		Destination: xdr.CloseDeferredPaymentRequestDestination{
 			Type:      xdr.CloseDeferredPaymentDestinationTypeAccount,
@@ -230,6 +232,7 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		Amount:            uint64(payment.Amount),
 		Details:           EmptyDetails{},
 		DeferredPaymentID: uint64(payment.RequestID),
+		AllTasks: &tasks,
 	}
 	if payment.CreatorDetails.Valid {
 		op.Details = payment.CreatorDetails.JSONText
