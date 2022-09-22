@@ -4,24 +4,16 @@ import (
 	"context"
 	"time"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
-
-	"gitlab.com/tokend/keypair"
-
-	"gitlab.com/tokend/go/xdr"
-
-	"gitlab.com/tokend/go/xdrbuild"
-
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
-
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
-
-	"gitlab.com/tokend/connectors/submit"
-
 	"github.com/pkg/errors"
-
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/running"
+	"gitlab.com/tokend/connectors/submit"
+	"gitlab.com/tokend/go/xdr"
+	"gitlab.com/tokend/go/xdrbuild"
+	"gitlab.com/tokend/keypair"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 )
 
 func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, requestsQ data.RequestsQ, horizonClient *horizon.Connector,
@@ -162,9 +154,10 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 	}
 	_, err = s.horizonClient.Submit(ctx, txEnvelope, false)
 	if err != nil {
-		if err, ok := err.(*submit.TxFailure); ok {
+		if txerr, ok := err.(submit.TxFailure); ok {
 			s.log.WithError(err).
 				WithField("tx_hash", payment.ID).
+				WithFields(txerr.GetLoganFields()).
 				Warn("tx failed to submit marking it failed")
 			_, err := s.paymentsQ.New().
 				FilterByID(payment.ID).
@@ -226,6 +219,8 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get destination account id")
 	}
+
+	tasks := uint32(0) // TODO configure this
 	op := &xdrbuild.CloseDeferredPayment{
 		Destination: xdr.CloseDeferredPaymentRequestDestination{
 			Type:      xdr.CloseDeferredPaymentDestinationTypeAccount,
@@ -234,6 +229,7 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		Amount:            uint64(payment.Amount),
 		Details:           EmptyDetails{},
 		DeferredPaymentID: uint64(payment.RequestID),
+		AllTasks: &tasks,
 	}
 	if payment.CreatorDetails.Valid {
 		op.Details = payment.CreatorDetails.JSONText

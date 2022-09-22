@@ -13,6 +13,7 @@ type CloseDeferredPayment struct {
 	Destination       xdr.CloseDeferredPaymentRequestDestination
 	Amount            uint64
 	Details           json.Marshaler
+	AllTasks          *uint32
 }
 
 func (op *CloseDeferredPayment) XDR() (*xdr.Operation, error) {
@@ -21,21 +22,27 @@ func (op *CloseDeferredPayment) XDR() (*xdr.Operation, error) {
 		return nil, errors.Wrap(err, "failed to marshal details")
 	}
 
+	requestOp := xdr.CreateCloseDeferredPaymentRequestOp{
+		RequestId: xdr.Uint64(op.RequestID),
+		Request: xdr.CloseDeferredPaymentRequest{
+			DeferredPaymentId: xdr.Uint64(op.DeferredPaymentID),
+			Destination:       op.Destination,
+			CreatorDetails:    xdr.Longstring(details),
+			Amount:            xdr.Uint64(op.Amount),
+			Ext:               xdr.EmptyExt{},
+		},
+		Ext: xdr.CreateCloseDeferredPaymentRequestOpExt{},
+	}
+
+	if op.AllTasks != nil {
+		v := xdr.Uint32(*op.AllTasks)
+		requestOp.AllTasks = &v
+	}
+
 	return &xdr.Operation{
 		Body: xdr.OperationBody{
-			Type: xdr.OperationTypeCreateCloseDeferredPaymentRequest,
-			CreateCloseDeferredPaymentRequestOp: &xdr.CreateCloseDeferredPaymentRequestOp{
-				RequestId: xdr.Uint64(op.RequestID),
-				Request: xdr.CloseDeferredPaymentRequest{
-					DeferredPaymentId: xdr.Uint64(op.DeferredPaymentID),
-					Destination:       op.Destination,
-					CreatorDetails:    xdr.Longstring(details),
-					Amount:            xdr.Uint64(op.Amount),
-					Ext:               xdr.EmptyExt{},
-				},
-				AllTasks: nil,
-				Ext:      xdr.CreateCloseDeferredPaymentRequestOpExt{},
-			},
+			Type:                                xdr.OperationTypeCreateCloseDeferredPaymentRequest,
+			CreateCloseDeferredPaymentRequestOp: &requestOp,
 		},
 	}, nil
 }

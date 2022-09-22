@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/Masterminds/squirrel v1.4.0
 	github.com/alecthomas/kingpin v2.2.6+incompatible
+	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
 	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
 	github.com/evalphobia/logrus_sentry v0.8.2 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
@@ -27,7 +28,7 @@ require (
 	gitlab.com/distributed_lab/running v0.0.0-20200706131153-4af0e83eb96c
 	gitlab.com/distributed_lab/urlval v2.2.0+incompatible
 	gitlab.com/tokend/connectors v0.1.3
-	gitlab.com/tokend/go v3.13.1-0.20200928125835-32df2e4a6022+incompatible
+	gitlab.com/tokend/go v3.16.1-0.20220922195648-f7c56be8022f+incompatible
 	gitlab.com/tokend/keypair v0.0.0-20190412110653-b9d7e0c8b312
 	gitlab.com/tokend/regources v4.9.2-0.20200918161150-47835a98daca+incompatible
 )
