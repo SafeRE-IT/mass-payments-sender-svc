@@ -220,7 +220,7 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		return nil, errors.Wrap(err, "failed to get destination account id")
 	}
 
-	tasks := uint32(0)
+	tasks := uint32(0) // TODO configure this
 	op := &xdrbuild.CloseDeferredPayment{
 		Destination: xdr.CloseDeferredPaymentRequestDestination{
 			Type:      xdr.CloseDeferredPaymentDestinationTypeAccount,
