@@ -21,6 +21,7 @@ func (op *CloseDeferredPayment) XDR() (*xdr.Operation, error) {
 		return nil, errors.Wrap(err, "failed to marshal details")
 	}
 
+ 	allTasks := xdr.Uint32(0)
 	return &xdr.Operation{
 		Body: xdr.OperationBody{
 			Type: xdr.OperationTypeCreateCloseDeferredPaymentRequest,
@@ -33,7 +34,7 @@ func (op *CloseDeferredPayment) XDR() (*xdr.Operation, error) {
 					Amount:            xdr.Uint64(op.Amount),
 					Ext:               xdr.EmptyExt{},
 				},
-				AllTasks: nil,
+				AllTasks: &allTasks,
 				Ext:      xdr.CreateCloseDeferredPaymentRequestOpExt{},
 			},
 		},
