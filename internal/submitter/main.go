@@ -4,24 +4,17 @@ import (
 	"context"
 	"time"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
-
-	"gitlab.com/tokend/keypair"
-
-	"gitlab.com/tokend/go/xdr"
-
-	"gitlab.com/tokend/go/xdrbuild"
-
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
-
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
-
-	"gitlab.com/tokend/connectors/submit"
-
+	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
-
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/running"
+	"gitlab.com/tokend/connectors/submit"
+	"gitlab.com/tokend/go/xdr"
+	"gitlab.com/tokend/go/xdrbuild"
+	"gitlab.com/tokend/keypair"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
+	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
 )
 
 func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, requestsQ data.RequestsQ, horizonClient *horizon.Connector,
@@ -164,6 +157,7 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 	if err != nil {
 		if txerr, ok := err.(submit.TxFailure); ok {
 
+			spew.Dump(txerr.Response)
 			s.log.WithFields(txerr.GetLoganFields()).Error("failed to submit but keeping it pending because i have to check")
 			//s.log.WithError(err).
 			//	WithField("tx_hash", payment.ID).

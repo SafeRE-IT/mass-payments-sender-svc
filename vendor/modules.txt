@@ -12,6 +12,9 @@ github.com/alecthomas/units
 # github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894
 ## explicit
 github.com/certifi/gocertifi
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/evalphobia/logrus_sentry v0.8.2
 ## explicit
 github.com/evalphobia/logrus_sentry
