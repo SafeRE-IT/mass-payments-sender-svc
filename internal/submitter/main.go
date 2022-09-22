@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/running"
@@ -156,20 +155,18 @@ func (s *Submitter) sendCloseDeferredPayment(ctx context.Context, payment data.P
 	_, err = s.horizonClient.Submit(ctx, txEnvelope, false)
 	if err != nil {
 		if txerr, ok := err.(submit.TxFailure); ok {
-
-			spew.Dump(txerr.Response)
-			s.log.WithFields(txerr.GetLoganFields()).Error("failed to submit but keeping it pending because i have to check")
-			//s.log.WithError(err).
-			//	WithField("tx_hash", payment.ID).
-			//	Warn("tx failed to submit marking it failed")
-			//_, err := s.paymentsQ.New().
-			//	FilterByID(payment.ID).
-			//	SetStatus(data.PaymentStatusFailed).
-			//	SetFailureReason(err.Error()).
-			//	Update()
-			//if err != nil {
-			//	return errors.Wrap(err, "failed to mark transaction failed")
-			//}
+			s.log.WithError(err).
+				WithField("tx_hash", payment.ID).
+				WithFields(txerr.GetLoganFields()).
+				Warn("tx failed to submit marking it failed")
+			_, err := s.paymentsQ.New().
+				FilterByID(payment.ID).
+				SetStatus(data.PaymentStatusFailed).
+				SetFailureReason(err.Error()).
+				Update()
+			if err != nil {
+				return errors.Wrap(err, "failed to mark transaction failed")
+			}
 			return nil
 		}
 		return errors.Wrap(err, "failed to submit transaction")
