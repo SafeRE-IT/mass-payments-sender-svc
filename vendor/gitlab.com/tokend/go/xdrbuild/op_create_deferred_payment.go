@@ -2,6 +2,7 @@ package xdrbuild
 
 import (
 	"encoding/json"
+
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/go/xdr"
 )
@@ -12,6 +13,7 @@ type CreateDeferredPayment struct {
 	DestinationAccount string
 	Amount             uint64
 	Details            json.Marshaler
+	AllTasks           *uint32
 }
 
 func (op *CreateDeferredPayment) XDR() (*xdr.Operation, error) {
@@ -32,21 +34,27 @@ func (op *CreateDeferredPayment) XDR() (*xdr.Operation, error) {
 		return nil, errors.Wrap(err, "failed to set op destination account id")
 	}
 
+	creationRequestOp := xdr.CreateDeferredPaymentCreationRequestOp{
+		RequestId: xdr.Uint64(op.RequestID),
+		Request: xdr.CreateDeferredPaymentRequest{
+			SourceBalance:  sb,
+			Destination:    da,
+			Amount:         xdr.Uint64(op.Amount),
+			CreatorDetails: xdr.Longstring(details),
+			Ext:            xdr.EmptyExt{},
+		},
+		Ext: xdr.CreateDeferredPaymentCreationRequestOpExt{},
+	}
+
+	if op.AllTasks != nil {
+		v := xdr.Uint32(*op.AllTasks)
+		creationRequestOp.AllTasks = &v
+	}
+
 	return &xdr.Operation{
 		Body: xdr.OperationBody{
-			Type: xdr.OperationTypeCreateDeferredPaymentCreationRequest,
-			CreateDeferredPaymentCreationRequestOp: &xdr.CreateDeferredPaymentCreationRequestOp{
-				RequestId: xdr.Uint64(op.RequestID),
-				Request: xdr.CreateDeferredPaymentRequest{
-					SourceBalance: sb,
-					Destination:   da,
-					Amount:        xdr.Uint64(op.Amount),
-					CreatorDetails: xdr.Longstring(details),
-					Ext:            xdr.EmptyExt{},
-				},
-				AllTasks: nil,
-				Ext:      xdr.CreateDeferredPaymentCreationRequestOpExt{},
-			},
+			Type:                                   xdr.OperationTypeCreateDeferredPaymentCreationRequest,
+			CreateDeferredPaymentCreationRequestOp: &creationRequestOp,
 		},
 	}, nil
 }
