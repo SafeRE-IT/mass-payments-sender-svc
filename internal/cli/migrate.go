@@ -1,30 +1,30 @@
 package cli
 
 import (
-    migrate "github.com/rubenv/sql-migrate"
-    "gitlab.com/distributed_lab/logan/v3/errors"
-    "gitlab.com/tokend/mass-payments-sender-svc/internal/assets"
-    "gitlab.com/tokend/mass-payments-sender-svc/internal/config"
+	migrate "github.com/rubenv/sql-migrate"
+	"gitlab.com/distributed_lab/logan/v3/errors"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/assets"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/config"
 )
 
 var migrations = &migrate.PackrMigrationSource{
-    Box: assets.Migrations,
+	Box: assets.Migrations,
 }
 
 func MigrateUp(cfg config.Config) error {
-    applied, err := migrate.Exec(cfg.DB().RawDB(), "postgres", migrations, migrate.Up)
-    if err != nil {
-      return errors.Wrap(err, "failed to apply migrations")
-    }
-    cfg.Log().WithField("applied", applied).Info("migrations applied")
-    return nil
+	applied, err := migrate.Exec(cfg.DB().RawDB(), "postgres", migrations, migrate.Up)
+	if err != nil {
+		return errors.Wrap(err, "failed to apply migrations")
+	}
+	cfg.Log().WithField("applied", applied).Info("migrations applied")
+	return nil
 }
 
 func MigrateDown(cfg config.Config) error {
-    applied, err := migrate.Exec(cfg.DB().RawDB(), "postgres", migrations, migrate.Down)
-    if err != nil {
-      return errors.Wrap(err, "failed to apply migrations")
-    }
-    cfg.Log().WithField("applied", applied).Info("migrations applied")
-    return nil
+	applied, err := migrate.Exec(cfg.DB().RawDB(), "postgres", migrations, migrate.Down)
+	if err != nil {
+		return errors.Wrap(err, "failed to apply migrations")
+	}
+	cfg.Log().WithField("applied", applied).Info("migrations applied")
+	return nil
 }

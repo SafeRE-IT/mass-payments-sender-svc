@@ -1,8 +1,13 @@
-FROM golang:1.12
+FROM golang:1.18-alpine
 
-WORKDIR /go/src/gitlab.com/tokend/mass-payments-sender-svc
+RUN apk add --no-cache git build-base
+
+WORKDIR /go/src/github.com/SafeRE-IT/mass-payments-sender-svc
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /usr/local/bin/mass-payments-sender-svc gitlab.com/tokend/mass-payments-sender-svc
+
+RUN go mod download
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /usr/local/bin/mass-payments-sender-svc github.com/SafeRE-IT/mass-payments-sender-svc
 
 ###
 

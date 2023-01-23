@@ -7,20 +7,20 @@ import (
 
 	"gitlab.com/tokend/go/xdrbuild"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/cosigner"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/submitter"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/submitter"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/horizon"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data/pg"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data/pg"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/streamers"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/streamers"
 
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/config"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/config"
 )
 
 type service struct {

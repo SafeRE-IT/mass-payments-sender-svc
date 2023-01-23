@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cast"
 
 	"gitlab.com/tokend/keypair"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/cosigner"
 
 	"gitlab.com/tokend/go/xdr"
 
@@ -22,8 +22,8 @@ import (
 
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/tokend/connectors/request"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/horizon"
 	regources "gitlab.com/tokend/regources/generated"
 )
 

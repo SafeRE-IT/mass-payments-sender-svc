@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/service/handlers/models"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/service/handlers/models"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/service/requests"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/service/requests"
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"

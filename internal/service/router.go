@@ -5,9 +5,9 @@ import (
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/logan/v3/errors"
 	"gitlab.com/tokend/go/doorman"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data/pg"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/service/handlers"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data/pg"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/horizon"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/service/handlers"
 )
 
 func (s *service) router() chi.Router {

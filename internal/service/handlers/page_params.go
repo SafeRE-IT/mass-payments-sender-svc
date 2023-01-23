@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"gitlab.com/tokend/mass-payments-sender-svc/resources"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/resources"
 
 	"gitlab.com/distributed_lab/kit/pgdb"
 )

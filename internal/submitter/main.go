@@ -11,9 +11,9 @@ import (
 	"gitlab.com/tokend/go/xdr"
 	"gitlab.com/tokend/go/xdrbuild"
 	"gitlab.com/tokend/keypair"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/cosigner"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/cosigner"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/horizon"
 )
 
 func NewSubmitter(log *logan.Entry, paymentsQ data.PaymentsQ, requestsQ data.RequestsQ, horizonClient *horizon.Connector,
@@ -229,7 +229,7 @@ func (s *Submitter) buildCloseDeferredPaymentTx(payment data.Payment) (*string, 
 		Amount:            uint64(payment.Amount),
 		Details:           EmptyDetails{},
 		DeferredPaymentID: uint64(payment.RequestID),
-		AllTasks: &tasks,
+		AllTasks:          &tasks,
 	}
 	if payment.CreatorDetails.Valid {
 		op.Details = payment.CreatorDetails.JSONText

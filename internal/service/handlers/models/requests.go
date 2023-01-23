@@ -1,8 +1,8 @@
 package models
 
 import (
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
-	"gitlab.com/tokend/mass-payments-sender-svc/resources"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/resources"
 )
 
 func NewRequestResponse(request data.Request) resources.RequestResponse {

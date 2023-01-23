@@ -1,4 +1,4 @@
-module gitlab.com/tokend/mass-payments-sender-svc
+module github.com/SafeRE-IT/mass-payments-sender-svc
 
 go 1.14
 

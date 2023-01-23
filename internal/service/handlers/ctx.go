@@ -9,7 +9,7 @@ import (
 	"gitlab.com/tokend/keypair"
 
 	"gitlab.com/tokend/go/doorman"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/data"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/data"
 	regources "gitlab.com/tokend/regources/generated"
 
 	"gitlab.com/distributed_lab/logan/v3"

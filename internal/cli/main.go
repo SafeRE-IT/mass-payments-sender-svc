@@ -4,8 +4,8 @@ import (
     "github.com/alecthomas/kingpin"
     "gitlab.com/distributed_lab/kit/kv"
     "gitlab.com/distributed_lab/logan/v3"
-    "gitlab.com/tokend/mass-payments-sender-svc/internal/service"
-    "gitlab.com/tokend/mass-payments-sender-svc/internal/config"
+    "github.com/SafeRE-IT/mass-payments-sender-svc/internal/service"
+    "github.com/SafeRE-IT/mass-payments-sender-svc/internal/config"
 )
 
 func Run(args []string) bool {

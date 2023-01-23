@@ -6,8 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 	"gitlab.com/tokend/connectors/signed"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/config"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/horizon"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/config"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/horizon"
 )
 
 type Cosigner interface {

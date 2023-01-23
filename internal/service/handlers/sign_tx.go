@@ -11,7 +11,7 @@ import (
 
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
-	"gitlab.com/tokend/mass-payments-sender-svc/internal/service/requests"
+	"github.com/SafeRE-IT/mass-payments-sender-svc/internal/service/requests"
 )
 
 func SignTx(w http.ResponseWriter, r *http.Request) {
